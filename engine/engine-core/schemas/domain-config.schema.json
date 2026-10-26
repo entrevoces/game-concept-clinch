@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DomainConfig",
+  "type": "object",
+  "required": ["domainId", "label", "jurisdiction", "profession", "languagePairs", "translationAreas", "status"],
+  "properties": {
+    "domainId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,48}$" },
+    "label": { "type": "object", "properties": { "en": { "type": "string" }, "es": { "type": "string" }, "zh": { "type": "string" } }, "required": ["en"] },
+    "jurisdiction": { "type": "object", "properties": { "country": { "type": "string" }, "region": { "type": "string" }, "regionCode": { "type": "string" } }, "required": ["country", "region"] },
+    "profession": { "type": "string", "enum": ["medical", "legal", "education", "social-services", "other"] },
+    "institutions": { "type": "array", "items": { "type": "string" } },
+    "languagePairs": { "type": "array", "minItems": 1, "items": { "type": "object", "properties": { "source": { "type": "string" }, "target": { "type": "string" }, "direction": { "type": "string" } }, "required": ["source", "target"] } },
+    "modalities": { "type": "array", "items": { "type": "string", "enum": ["consecutive", "simultaneous", "sight", "remote"] } },
+    "translationAreas": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/area" } },
+    "competencyWeights": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 } },
+    "sourceIds": { "type": "array", "items": { "type": "string" } },
+    "status": { "type": "string", "enum": ["draft", "active", "archived"] },
+    "version": { "type": "integer", "minimum": 1 }
+  },
+  "$defs": {
+    "area": {
+      "type": "object",
+      "required": ["areaId", "label", "riskIfMistranslated"],
+      "properties": {
+        "areaId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,48}$" },
+        "label": { "type": "object", "properties": { "en": { "type": "string" } }, "required": ["en"] },
+        "setting": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "goals": { "type": "array", "items": { "type": "string" } },
+        "typicalSpeechFeatures": { "type": "array", "items": { "type": "string" } },
+        "riskIfMistranslated": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "conceptIds": { "type": "array", "items": { "type": "string" } },
+        "prerequisiteAreaIds": { "type": "array", "items": { "type": "string" } },
+        "order": { "type": "integer" }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@entrevoces/engine-core",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "exports": { ".": "./index.js" },
+  "description": "ENTRE VOCES Progression Engine core — schemas, knowledge, learner model, adaptive selector. Zero dependencies; runs in Node and browser."
+}

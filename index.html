@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Atelier — Build your bridge studio · ENTRE VOCES</title>
+<meta name="description" content="Work a clinic and courtroom where every concept must be distinguished, built, and proven under pressure. Powered by the ENTRE VOCES Progression Engine.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="game-header">
+  <a class="back-link" id="hubLink" href="https://entrevoces.github.io/">← Hub</a>
+  <div class="title-block">
+    <h1>Voice Atelier</h1>
+    <p class="tagline">Build the little studio between the clinic and the courthouse. Every understood person earns the Trust that builds it.</p>
+  </div>
+  <span id="syncBadge" class="pill pill-local">Local-only</span>
+</header>
+
+<main id="app">
+  <!-- TITLE -->
+  <section id="screen-title" class="screen is-active">
+    <div class="title-layout">
+      <div class="panel panel-hero">
+        <p class="kicker">A building game about being understood</p>
+        <h2>Recognition is the lobby.<br>This game makes you work the whole building.</h2>
+        <p>Anyone can tap the right translation once. In the Atelier you <strong>hear</strong> what a term means, <strong>build</strong> it in the other language tile by tile, <strong>catch</strong> the distortion that would mislead the room, and <strong>judge</strong> a teach-back — because that is what the work actually feels like. Each person you truly help pays <strong>Trust</strong> into the studio below. Spend it. Make the place yours.</p>
+        <p id="titleContext" class="hint">Unlocking the studio…</p>
+        <div class="title-actions">
+          <button id="startBtn" class="btn btn-primary btn-large" type="button">Start working</button>
+          <button id="dueBtn" class="btn btn-large" type="button" hidden>Review due concepts</button>
+        </div>
+        <div id="titleStats" class="title-stats"></div>
+      </div>
+      <div class="panel studio-panel">
+        <div class="studio-head"><h3>Your studio</h3><span id="trustPill" class="pill pill-strong">Trust 0</span></div>
+        <p class="hint">Tap a plot, then build. Helping people pays Trust. Comforts dress the room — they never buy a correct answer.</p>
+        <div id="studioGrid" class="studio-grid" aria-label="Studio building plots"></div>
+        <div id="buildMenu" class="build-menu" hidden></div>
+        <h4 class="duos-title">Distinction duos reconciled</h4>
+        <div id="duoWall" class="duo-wall"><span class="hint">Catch a distortion to reconcile your first duo.</span></div>
+      </div>
+      <div class="panel map-panel">
+        <h3>Mastery map — tap any concept to clinch it</h3>
+        <p class="hint">Eight proofs per concept: Recognize · Equivalent · Understand · Distinguish · Apply · Retrieve · Speak · Interpret. Filled = evidenced. Gold ring = due for review before it fades.</p>
+        <div id="masteryMap" class="mastery-map"></div>
+        <div class="map-legend"><span><i class="dot dot-none"></i> No evidence</span><span><i class="dot dot-learning"></i> Learning</span><span><i class="dot dot-strong"></i> Strong (≥70%)</span><span><i class="dot dot-due"></i> Due</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAY -->
+  <section id="screen-play" class="screen">
+    <div class="hud">
+      <span id="hudPlace" class="pill pill-strong"></span>
+      <span id="hudConcept" class="pill"></span>
+      <span id="hudBeat" class="pill"></span>
+      <span id="hudStreak" class="pill"></span>
+      <span id="hudDue" class="pill pill-due" hidden></span>
+      <span class="hud-spacer"></span>
+      <label class="pressure-toggle"><input type="checkbox" id="pressureToggle"> Pressure timer</label>
+    </div>
+    <div class="play-layout">
+      <div class="scene-card" id="sceneCard">
+        <div class="scene-top">
+          <span id="sceneRoom" class="scene-room"></span>
+          <span id="timerRing" class="timer-ring" hidden><svg viewBox="0 0 44 44"><circle class="ring-bg" cx="22" cy="22" r="19"/><circle class="ring-fg" id="ringFg" cx="22" cy="22" r="19"/></svg><span id="timerText">8</span></span>
+        </div>
+        <div class="characters" aria-hidden="true">
+          <div class="person" id="personA">
+            <svg viewBox="0 0 120 150"><circle cx="60" cy="34" r="24" class="skin"/><path class="hair" d="M36 32 Q40 8 60 8 Q82 8 84 32 Q72 20 60 21 Q48 20 36 32Z"/><rect x="34" y="62" width="52" height="66" rx="14" class="shirt-a"/><circle class="eye" cx="51" cy="33" r="3.2"/><circle class="eye" cx="69" cy="33" r="3.2"/><path class="mouth mouth-neutral" d="M50 46 Q60 50 70 46"/></svg>
+            <span class="person-name" id="nameA">María</span><span class="person-role" id="roleA">Patient</span>
+          </div>
+          <div class="bubble" id="speechBubble"><p id="bubbleText"></p></div>
+          <div class="person" id="personB">
+            <svg viewBox="0 0 120 150"><circle cx="60" cy="34" r="24" class="skin2"/><path class="hair2" d="M35 30 Q38 6 62 7 Q85 8 85 31 L74 24 Q60 17 46 24Z"/><rect x="34" y="62" width="52" height="66" rx="14" class="shirt-b"/><circle class="eye" cx="51" cy="33" r="3.2"/><circle class="eye" cx="69" cy="33" r="3.2"/><path class="mouth mouth-neutral" d="M50 46 Q60 50 70 46"/></svg>
+            <span class="person-name" id="nameB">You</span><span class="person-role">Interpreter</span>
+          </div>
+        </div>
+        <div class="visit-track" id="visitTrack" aria-label="Visit progress"></div>
+        <p id="beatCaption" class="beat-caption"></p>
+      </div>
+
+      <div class="panel play-panel">
+        <h2 id="promptText" class="prompt"></h2>
+        <div id="choices" class="choices" role="group" aria-label="Answer choices"></div>
+        <div id="tilesWrap" hidden>
+          <div id="sentenceBuilt" class="sentence-built" aria-label="Your built sentence"></div>
+          <div id="tileBank" class="tile-bank" aria-label="Word tiles"></div>
+          <div class="tile-actions">
+            <button id="clearTilesBtn" class="btn btn-small" type="button">Clear</button>
+            <button id="checkTilesBtn" class="btn btn-primary" type="button">Check sentence</button>
+          </div>
+        </div>
+        <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+        <div id="consequence" class="consequence" hidden></div>
+        <div class="play-actions">
+          <button id="hintBtn" class="btn" type="button">Interpreter's notebook (hint)</button>
+          <button id="nextStepBtn" class="btn btn-primary" type="button" hidden>Continue</button>
+          <button id="quitBtn" class="btn btn-ghost" type="button">Finish session</button>
+        </div>
+        <p id="sourceLine" class="hint"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- END -->
+  <section id="screen-end" class="screen">
+    <div class="panel panel-hero end-panel">
+      <p class="kicker">Session report</p>
+      <h2 id="endTitle">Good work in there.</h2>
+      <div id="endStats"></div>
+      <div id="endExplain" class="explain"></div>
+      <h3>What happens next (so you come back)</h3>
+      <div id="returnBox" class="return-box"></div>
+      <div class="play-actions">
+        <button id="againBtn" class="btn btn-primary btn-large" type="button">Keep working (engine picks)</button>
+        <button id="mapBtn" class="btn btn-large" type="button">Mastery map</button>
+        <a class="btn btn-large" id="endHubLink" href="https://entrevoces.github.io/">Hub</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><p>Concept Clinch · ENTRE VOCES Progression Engine · Every proof is engine evidence — play Shift next and the same learner walks in with you.</p></footer>
+<div id="fxLayer" aria-hidden="true"></div>
+<script type="module" src="game.js"></script>
+</body>
+</html>

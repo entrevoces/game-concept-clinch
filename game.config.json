@@ -1,0 +1,28 @@
+{
+  "gameId": "concept-clinch",
+  "label": "Voice Atelier",
+  "domainIds": [
+    "oregon-medical",
+    "oregon-legal",
+    "ontario-real-estate",
+    "oregon-cultivation",
+    "california-tax",
+    "ai-technology"
+  ],
+  "competences": [
+    "domain-knowledge",
+    "professional-terminology",
+    "bilingual-terminology",
+    "terminology-usage"
+  ],
+  "stages": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "engineUrl": "http://127.0.0.1:8787",
+  "offlineSeed": "concepts-subset.json",
+  "version": 1
+}

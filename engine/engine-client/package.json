@@ -1,0 +1,8 @@
+{
+  "name": "@entrevoces/engine-client",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "engine-client.js",
+  "exports": { ".": "./engine-client.js" },
+  "description": "Offline-first EngineClient SDK for standalone ENTRE VOCES games (spec §9.3, §11.2)."
+}

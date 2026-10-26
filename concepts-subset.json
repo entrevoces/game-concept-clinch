@@ -1,0 +1,3316 @@
+[
+  {
+    "conceptId": "dosage",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "treatment-plan"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology",
+      "bilingual-terminology",
+      "terminology-usage"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "dosage",
+        "alternatives": [
+          "dosage regimen"
+        ],
+        "register": "professional"
+      },
+      "es": {
+        "term": "posología",
+        "alternatives": [
+          "dosis pautada",
+          "pauta de dosificación"
+        ],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "剂量方案",
+        "alternatives": [
+          "给药方案"
+        ],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "The full prescribed regimen: amount per dose, frequency, route, and duration — not a single amount.",
+      "es": "El régimen completo prescrito: cantidad por toma, frecuencia, vía y duración.",
+      "zh": "完整的处方用药方案：每次用量、频次、途径和疗程，而非单次量。"
+    },
+    "distinctions": [
+      {
+        "contrast": "dose",
+        "difference": "A dose is one single amount taken at one time; dosage is the whole regimen (amount × frequency × duration). Confusing them changes how much medicine a patient takes."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "dose-equals-dosage",
+        "description": "Treating dosage and dose as the same word",
+        "diagnosticPrompt": "A prescription says '500 mg twice daily for 7 days.' Is '500 mg' the dose or the dosage — and what is the other one?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Follow the dosage exactly: one tablet twice a day for seven days.",
+        "es": "Siga la posología exactamente: una tableta dos veces al día durante siete días.",
+        "zh": "请严格按照剂量方案服药：每天两次，每次一片，连服七天。"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "confusable-with",
+        "targetId": "dose",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "dose",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "treatment-plan"
+    ],
+    "difficulty": 1,
+    "competences": [
+      "professional-terminology",
+      "bilingual-terminology"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "dose",
+        "alternatives": [],
+        "register": "professional"
+      },
+      "es": {
+        "term": "dosis",
+        "alternatives": [
+          "toma"
+        ],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "剂量",
+        "alternatives": [
+          "一次量"
+        ],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "A single measured amount of medicine taken at one time.",
+      "es": "Una cantidad medida de medicamento que se toma en una sola vez.",
+      "zh": "一次服用的单次药量。"
+    },
+    "distinctions": [
+      {
+        "contrast": "dosage",
+        "difference": "Dose = one amount, once. Dosage = the entire schedule. Interpreting one as the other can double or halve medication."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "dose-equals-dosage",
+        "description": "Treating dosage and dose as the same word",
+        "diagnosticPrompt": "The patient asks: '¿Cuánto tomo cada vez?' Are they asking about dose or dosage?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Take one dose now, then wait six hours.",
+        "es": "Tome una dosis ahora y luego espere seis horas.",
+        "zh": "现在服用一剂，然后等待六小时。"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "confusable-with",
+        "targetId": "dosage",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "informed-consent",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "informed-consent"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer",
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "oha-hci-program",
+      "ncihc-ethics"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "informed consent",
+        "alternatives": [],
+        "register": "professional/legal"
+      },
+      "es": {
+        "term": "consentimiento informado",
+        "alternatives": [],
+        "register": "professional/legal"
+      },
+      "zh": {
+        "term": "知情同意",
+        "alternatives": [],
+        "register": "professional/legal"
+      }
+    },
+    "definition": {
+      "en": "A patient's voluntary agreement to a procedure after understanding its purpose, risks, benefits, and alternatives.",
+      "es": "La aceptación voluntaria de un procedimiento tras comprender su finalidad, riesgos, beneficios y alternativas.",
+      "zh": "患者在理解某项操作的目的、风险、益处和替代方案后自愿作出的同意。"
+    },
+    "distinctions": [
+      {
+        "contrast": "signature on a form",
+        "difference": "Consent is the understood agreement, not the signature. A signed form without understanding is not informed consent — interpreters must convey the discussion, not just witness a signature."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "consent-is-signature",
+        "description": "Equating consent with signing a form",
+        "diagnosticPrompt": "The patient signed but says they did not understand the risks. Has informed consent happened? What should the interpreter do?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Before we proceed, I need your informed consent after we discuss the risks and alternatives.",
+        "es": "Antes de continuar, necesito su consentimiento informado después de hablar de los riesgos y las alternativas.",
+        "zh": "在继续之前，我们需要先讨论风险和替代方案，然后取得您的知情同意。"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "related",
+        "targetId": "adverse-effect",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "adverse-effect",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "informed-consent",
+      "treatment-plan"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "professional-terminology",
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "adverse effect",
+        "alternatives": [
+          "adverse reaction"
+        ],
+        "register": "professional"
+      },
+      "es": {
+        "term": "efecto adverso",
+        "alternatives": [
+          "reacción adversa"
+        ],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "不良反应",
+        "alternatives": [
+          "副作用"
+        ],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "An unwanted, harmful effect caused by a medication or procedure.",
+      "es": "Un efecto no deseado y perjudicial causado por un medicamento o procedimiento.",
+      "zh": "由药物或操作引起的非预期的有害反应。"
+    },
+    "distinctions": [
+      {
+        "contrast": "side effect",
+        "difference": "Side effects can be neutral or even useful; adverse effects are harmful. In consent discussions the interpreter must not soften 'adverse' into merely 'possible'."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "softening-risk",
+        "description": "Softening risk language when interpreting consent",
+        "diagnosticPrompt": "How would you interpret: 'There is a small risk of serious adverse effects, including bleeding'?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Report any adverse effects, such as swelling or difficulty breathing, right away.",
+        "es": "Informe de inmediato cualquier efecto adverso, como hinchazón o dificultad para respirar.",
+        "zh": "如出现任何不良反应，例如肿胀或呼吸困难，请立即告知。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "chief-complaint",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "history-symptoms"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "listening"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "chief complaint",
+        "alternatives": [
+          "presenting complaint"
+        ],
+        "register": "professional"
+      },
+      "es": {
+        "term": "motivo de consulta",
+        "alternatives": [
+          "queja principal"
+        ],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "主诉",
+        "alternatives": [
+          "就诊原因"
+        ],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "The main reason for the visit, in the patient's own framing — not yet a diagnosis.",
+      "es": "El motivo principal de la visita, según el propio paciente; aún no es un diagnóstico.",
+      "zh": "患者本人表述的主要就诊原因，尚不是诊断。"
+    },
+    "distinctions": [
+      {
+        "contrast": "diagnosis",
+        "difference": "The chief complaint is what brings the patient in ('my chest hurts'); the diagnosis is the clinician's conclusion ('angina'). Interpreters must not upgrade a complaint into a diagnosis."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "complaint-as-diagnosis",
+        "description": "Interpreting a symptom report as a diagnosis",
+        "diagnosticPrompt": "Patient: 'Me duele el pecho desde ayer.' Is that a chief complaint or a diagnosis? Interpret it without adding a diagnosis."
+      }
+    ],
+    "examples": [
+      {
+        "en": "What is your chief complaint today?",
+        "es": "¿Cuál es su motivo de consulta hoy?",
+        "zh": "您今天主要是哪里不舒服（主诉）？"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "prerequisite",
+        "targetId": "diagnosis",
+        "documented": false
+      }
+    ]
+  },
+  {
+    "conceptId": "diagnosis",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "diagnosis-explanation"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "diagnosis",
+        "alternatives": [],
+        "register": "professional"
+      },
+      "es": {
+        "term": "diagnóstico",
+        "alternatives": [],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "诊断",
+        "alternatives": [],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "The clinician's identification of a condition, after evaluation — stated with a degree of certainty.",
+      "es": "La identificación de una afección por parte del profesional, tras la evaluación, con un grado de certeza.",
+      "zh": "临床医生经评估后对病情作出的判断，并带有一定的确定程度。"
+    },
+    "distinctions": [
+      {
+        "contrast": "prognosis",
+        "difference": "Diagnosis says what the condition is; prognosis says what is likely to happen. Mixing them misleads patients about both."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "diagnosis-as-certainty",
+        "description": "Interpreting a tentative diagnosis as certain",
+        "diagnosticPrompt": "Clinician: 'This is most likely a viral infection.' What must the interpretation preserve about certainty?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "The diagnosis is most likely a viral infection, but we will confirm with a test.",
+        "es": "El diagnóstico más probable es una infección viral, pero lo confirmaremos con una prueba.",
+        "zh": "最可能的诊断是病毒感染，但我们会通过检查来确认。"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "confusable-with",
+        "targetId": "prognosis",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "prognosis",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "diagnosis-explanation"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "prognosis",
+        "alternatives": [],
+        "register": "professional"
+      },
+      "es": {
+        "term": "pronóstico",
+        "alternatives": [],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "预后",
+        "alternatives": [
+          "预判"
+        ],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "The likely course and outcome of a condition over time.",
+      "es": "La evolución y el resultado probables de una afección a lo largo del tiempo.",
+      "zh": "某种疾病随时间推移的可能病程和结果。"
+    },
+    "distinctions": [
+      {
+        "contrast": "diagnosis",
+        "difference": "Diagnosis = what it is. Prognosis = what is likely to happen. A good prognosis can accompany a serious diagnosis."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "diagnosis-as-certainty",
+        "description": "Interpreting prognosis as a guarantee",
+        "diagnosticPrompt": "Interpret: 'The prognosis is generally good with treatment.' What words carry the uncertainty?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "With treatment, the prognosis is generally good.",
+        "es": "Con tratamiento, el pronóstico es generalmente bueno.",
+        "zh": "经过治疗，预后总体良好。"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "confusable-with",
+        "targetId": "diagnosis",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "onset",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "history-symptoms"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology",
+      "listening"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "onset",
+        "alternatives": [
+          "beginning"
+        ],
+        "register": "professional"
+      },
+      "es": {
+        "term": "inicio",
+        "alternatives": [
+          "comienzo de los síntomas"
+        ],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "发病",
+        "alternatives": [
+          "起病"
+        ],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "When symptoms or a condition began.",
+      "es": "El momento en que comenzaron los síntomas o la afección.",
+      "zh": "症状或疾病开始出现的时间。"
+    },
+    "distinctions": [
+      {
+        "contrast": "duration",
+        "difference": "Onset is the start point; duration is how long it has lasted. 'Since Tuesday' answers onset; 'for three days' answers duration."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "onset-duration-confusion",
+        "description": "Swapping onset and duration",
+        "diagnosticPrompt": "Patient: 'Empezó el martes.' Is that onset or duration? What follow-up question separates them?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "When was the onset of the pain?",
+        "es": "¿Cuándo fue el inicio del dolor?",
+        "zh": "疼痛是什么时候开始的（发病时间）？"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "intake",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "intake-registration"
+    ],
+    "difficulty": 1,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "intake",
+        "alternatives": [
+          "registration intake"
+        ],
+        "register": "institutional"
+      },
+      "es": {
+        "term": "admisión",
+        "alternatives": [
+          "registro de ingreso"
+        ],
+        "register": "institutional"
+      },
+      "zh": {
+        "term": "登记",
+        "alternatives": [
+          "入院登记"
+        ],
+        "register": "institutional"
+      }
+    },
+    "definition": {
+      "en": "The initial collection of a patient's identifying, coverage, and contact information.",
+      "es": "La recopilación inicial de los datos de identificación, cobertura y contacto del paciente.",
+      "zh": "最初收集患者身份、保险和联系信息的过程。"
+    },
+    "distinctions": [
+      {
+        "contrast": "assessment",
+        "difference": "Intake collects administrative information; assessment is clinical evaluation. Intake questions are not medical advice."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "We will complete intake first, then the nurse will see you.",
+        "es": "Primero completaremos la admisión y luego la enfermera le atenderá.",
+        "zh": "我们先完成登记，然后护士会来见您。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "referral",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "intake-registration",
+      "discharge-followup"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "terminology-usage"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "referral",
+        "alternatives": [],
+        "register": "institutional"
+      },
+      "es": {
+        "term": "derivación",
+        "alternatives": [
+          "remisión",
+          "referencia"
+        ],
+        "register": "institutional"
+      },
+      "zh": {
+        "term": "转诊",
+        "alternatives": [
+          "转介"
+        ],
+        "register": "institutional"
+      }
+    },
+    "definition": {
+      "en": "Directing a patient to another clinician or service for care beyond the current visit.",
+      "es": "La orientación de un paciente a otro profesional o servicio para una atención adicional.",
+      "zh": "将患者转介给另一位临床医生或服务机构以获得进一步诊疗。"
+    },
+    "distinctions": [
+      {
+        "contrast": "recommendation",
+        "difference": "A referral is an institutional act (often requiring authorization); a recommendation is advice. Interpreting one as the other confuses what will actually happen."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "referral-as-advice",
+        "description": "Interpreting a formal referral as casual advice",
+        "diagnosticPrompt": "Clinician: 'I am placing a referral to cardiology.' What must the patient understand will happen next?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "I am placing a referral to cardiology; they will contact you within a week.",
+        "es": "Voy a hacer una derivación a cardiología; le contactarán en el plazo de una semana.",
+        "zh": "我会为您开具心脏科转诊，他们会在一周内联系您。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "discharge",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "discharge-followup"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "discharge (from care)",
+        "alternatives": [
+          "discharge instructions"
+        ],
+        "register": "institutional"
+      },
+      "es": {
+        "term": "alta",
+        "alternatives": [
+          "alta médica",
+          "instrucciones de alta"
+        ],
+        "register": "institutional"
+      },
+      "zh": {
+        "term": "出院",
+        "alternatives": [
+          "出院指导"
+        ],
+        "register": "institutional"
+      }
+    },
+    "definition": {
+      "en": "Release from a facility or service, together with the instructions that accompany it. (Distinct from bodily discharge.)",
+      "es": "La salida de un centro o servicio, junto con las instrucciones que la acompañan. (Distinto de secreción.)",
+      "zh": "从医疗机构或服务中离院，以及随附的指导说明。（与分泌物不同。）"
+    },
+    "distinctions": [
+      {
+        "contrast": "bodily discharge (secretion)",
+        "difference": "Same English word, different concepts: leaving the hospital vs. a bodily fluid. Context decides; translators must not carry the wrong sense across languages."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "discharge-polysemy",
+        "description": "Carrying the wrong sense of 'discharge' across languages",
+        "diagnosticPrompt": "In 'You will be discharged tomorrow with instructions,' which sense of discharge is meant? How do you know?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "You will be discharged tomorrow; these are your discharge instructions.",
+        "es": "Le darán el alta mañana; estas son sus instrucciones de alta.",
+        "zh": "您明天出院；这是您的出院指导。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "follow-up",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "discharge-followup"
+    ],
+    "difficulty": 1,
+    "competences": [
+      "terminology-usage"
+    ],
+    "sourceIds": [
+      "oha-hci-program"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "follow-up",
+        "alternatives": [
+          "follow-up appointment"
+        ],
+        "register": "institutional"
+      },
+      "es": {
+        "term": "seguimiento",
+        "alternatives": [
+          "cita de seguimiento"
+        ],
+        "register": "institutional"
+      },
+      "zh": {
+        "term": "随访",
+        "alternatives": [
+          "复诊"
+        ],
+        "register": "institutional"
+      }
+    },
+    "definition": {
+      "en": "A planned later check on progress, results, or recovery.",
+      "es": "Una revisión posterior planificada del progreso, los resultados o la recuperación.",
+      "zh": "按计划在之后进行的进展、结果或康复复查。"
+    },
+    "distinctions": [
+      {
+        "contrast": "emergency return",
+        "difference": "Follow-up is scheduled monitoring; return precautions ('come back now if…') are urgent. Both appear in discharge talk and must not be merged."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "Schedule a follow-up in two weeks, sooner if the fever returns.",
+        "es": "Programe una cita de seguimiento en dos semanas, antes si vuelve la fiebre.",
+        "zh": "请预约两周后的复诊，如再次发烧请提前就诊。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "clarification-protocol",
+    "domainId": "oregon-medical",
+    "areaIds": [
+      "professional-judgment-med"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "ncihc-ethics"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "request for clarification",
+        "alternatives": [
+          "clarification protocol"
+        ],
+        "register": "professional"
+      },
+      "es": {
+        "term": "solicitud de aclaración",
+        "alternatives": [
+          "protocolo de aclaración"
+        ],
+        "register": "professional"
+      },
+      "zh": {
+        "term": "请求澄清",
+        "alternatives": [
+          "澄清流程"
+        ],
+        "register": "professional"
+      }
+    },
+    "definition": {
+      "en": "The interpreter transparently pauses to ask a speaker to repeat or clarify, identifying themselves as the interpreter — without adding advice or opinions.",
+      "es": "El intérprete pausa de forma transparente para pedir que se repita o aclare algo, identificándose como intérprete, sin añadir consejos ni opiniones.",
+      "zh": "口译员透明地暂停，请说话者重复或澄清，并表明自己的口译员身份——不添加建议或意见。"
+    },
+    "distinctions": [
+      {
+        "contrast": "giving advice",
+        "difference": "Clarifying language ('The interpreter needs to clarify a term') is the role; advising ('You should ask for…') is outside it. The protocol keeps that line visible to everyone."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "interpreter-as-advocate",
+        "description": "Slipping from interpreting into advising or advocating",
+        "diagnosticPrompt": "The patient asks you directly: 'What would you do?' What does the clarification/role protocol require?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Interpreter: 'This is the interpreter — could you clarify that term so I can interpret it accurately?'",
+        "es": "Intérprete: «Soy la intérprete — ¿podría aclarar ese término para interpretarlo con precisión?»",
+        "zh": "口译员：\"我是口译员——请您澄清一下这个术语，以便我准确传译好吗？\""
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "arraignment",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "arraignment"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "arraignment",
+        "alternatives": [],
+        "register": "legal"
+      },
+      "es": {
+        "term": "lectura de cargos",
+        "alternatives": [
+          "comparecencia inicial",
+          "instrucción de cargos"
+        ],
+        "register": "legal"
+      },
+      "zh": {
+        "term": "提审",
+        "alternatives": [
+          "传讯"
+        ],
+        "register": "legal"
+      }
+    },
+    "definition": {
+      "en": "The first court appearance where charges are read and rights are advised.",
+      "es": "La primera comparecencia ante el tribunal, donde se leen los cargos y se informan los derechos.",
+      "zh": "首次出庭，由法庭宣读指控并告知权利。"
+    },
+    "distinctions": [
+      {
+        "contrast": "trial",
+        "difference": "Arraignment is the opening procedural step (charges + rights + plea timing), not the determination of guilt. Interpreting it as 'trial' misstates what will happen."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "arraignment-as-trial",
+        "description": "Presenting arraignment as the trial itself",
+        "diagnosticPrompt": "Defendant: '¿Hoy es el juicio?' How do you interpret the judge's explanation that today is only the arraignment?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "This is your arraignment. I will read the charges and advise you of your rights.",
+        "es": "Esta es su lectura de cargos. Leeré los cargos y le informaré de sus derechos.",
+        "zh": "这是您的提审。我将宣读指控并告知您的权利。"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "related",
+        "targetId": "charge",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "charge",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "arraignment"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "charge (criminal)",
+        "alternatives": [
+          "criminal charge"
+        ],
+        "register": "legal"
+      },
+      "es": {
+        "term": "cargo",
+        "alternatives": [
+          "acusación formal"
+        ],
+        "register": "legal"
+      },
+      "zh": {
+        "term": "指控",
+        "alternatives": [
+          "控罪"
+        ],
+        "register": "legal"
+      }
+    },
+    "definition": {
+      "en": "A formal accusation that a person committed a specific offense. (Not a fee.)",
+      "es": "Una acusación formal de que una persona cometió un delito concreto. (No es un cobro.)",
+      "zh": "指控某人犯有特定罪行的正式控告。（不是费用。）"
+    },
+    "distinctions": [
+      {
+        "contrast": "fee/price ('charge')",
+        "difference": "In court, 'charge' is an accusation, not money. The everyday sense must not leak into legal interpreting."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "charge-polysemy",
+        "description": "Interpreting legal 'charge' as a fee",
+        "diagnosticPrompt": "In 'You are charged with theft,' what does 'charged' mean, and what mistranslation must be avoided?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "You are charged with theft in the second degree.",
+        "es": "Se le acusa de hurto en segundo grado.",
+        "zh": "您被指控犯有二级盗窃罪。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "plea",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "plea-colloquy"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "plea",
+        "alternatives": [
+          "plea of guilty / not guilty"
+        ],
+        "register": "legal"
+      },
+      "es": {
+        "term": "declaración",
+        "alternatives": [
+          "declaración de culpabilidad / no culpabilidad"
+        ],
+        "register": "legal"
+      },
+      "zh": {
+        "term": "答辩",
+        "alternatives": [
+          "认罪/不认罪答辩"
+        ],
+        "register": "legal"
+      }
+    },
+    "definition": {
+      "en": "The defendant's formal answer to charges: guilty, not guilty, or no contest where allowed.",
+      "es": "La respuesta formal del acusado a los cargos: culpable, no culpable o sin oposición, donde esté permitido.",
+      "zh": "被告对指控的正式回答：认罪、不认罪，或在允许的情况下不抗辩。"
+    },
+    "distinctions": [
+      {
+        "contrast": "pleading/begging",
+        "difference": "A legal plea is a formal procedural answer, not begging. Register must stay formal; a colloquial rendering distorts the record."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "plea-register",
+        "description": "Rendering the formal plea in a begging/colloquial register",
+        "diagnosticPrompt": "How do you keep 'I plead not guilty' formal and exact in interpretation? What would a register error sound like?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "How do you plead to the charge?",
+        "es": "¿Cómo se declara ante el cargo?",
+        "zh": "您对指控作何答辩？"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "related",
+        "targetId": "waiver",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "waiver",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "plea-colloquy",
+      "sight-documents"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "waiver",
+        "alternatives": [
+          "waive a right"
+        ],
+        "register": "legal"
+      },
+      "es": {
+        "term": "renuncia",
+        "alternatives": [
+          "renuncia a un derecho"
+        ],
+        "register": "legal"
+      },
+      "zh": {
+        "term": "放弃",
+        "alternatives": [
+          "弃权"
+        ],
+        "register": "legal"
+      }
+    },
+    "definition": {
+      "en": "The voluntary, knowing relinquishment of a known right (e.g., to a jury trial).",
+      "es": "La renuncia voluntaria e informada a un derecho conocido (p. ej., al juicio con jurado).",
+      "zh": "自愿且知情地放弃一项已知权利（例如陪审团审判权）。"
+    },
+    "distinctions": [
+      {
+        "contrast": "losing a right",
+        "difference": "Waiver requires that the person knows the right and gives it up voluntarily. Interpreting must preserve 'knowing and voluntary' — it cannot sound automatic."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "waiver-as-automatic",
+        "description": "Making a waiver sound automatic or uninformed",
+        "diagnosticPrompt": "Judge: 'Do you understand you are waiving your right to a jury trial?' What two ideas must the interpretation keep intact?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Do you understand that by pleading guilty you waive your right to a jury trial?",
+        "es": "¿Entiende que al declararse culpable renuncia a su derecho a un juicio con jurado?",
+        "zh": "您是否理解，认罪即意味着放弃陪审团审判的权利？"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "testimony",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "evidence-testimony",
+      "victim-witness"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "listening",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "testimony",
+        "alternatives": [],
+        "register": "legal"
+      },
+      "es": {
+        "term": "testimonio",
+        "alternatives": [
+          "declaración testimonial"
+        ],
+        "register": "legal"
+      },
+      "zh": {
+        "term": "证词",
+        "alternatives": [
+          "作证"
+        ],
+        "register": "legal"
+      }
+    },
+    "definition": {
+      "en": "A witness's sworn spoken evidence in a proceeding.",
+      "es": "La declaración oral bajo juramento de un testigo en un procedimiento.",
+      "zh": "证人在程序中宣誓后所作的口头证词。"
+    },
+    "distinctions": [
+      {
+        "contrast": "testament / story",
+        "difference": "Testimony is sworn evidence subject to challenge — hedges, corrections, and uncertainty are part of the evidence and must be preserved, not smoothed away."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "smoothing-testimony",
+        "description": "Cleaning up hedges and self-corrections in testimony",
+        "diagnosticPrompt": "Witness: 'I think — no, wait, it was Tuesday, I think.' What must the interpretation preserve, and why?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Please give your testimony truthfully and completely.",
+        "es": "Por favor, rinda su testimonio de forma veraz y completa.",
+        "zh": "请如实、完整地作证。"
+      }
+    ],
+    "relationships": [
+      {
+        "type": "related",
+        "targetId": "objection",
+        "documented": true
+      }
+    ]
+  },
+  {
+    "conceptId": "objection",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "evidence-testimony"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology",
+      "cognitive-interpreting"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "objection",
+        "alternatives": [
+          "objection, hearsay"
+        ],
+        "register": "legal"
+      },
+      "es": {
+        "term": "objeción",
+        "alternatives": [
+          "objeción, testimonio de oídas"
+        ],
+        "register": "legal"
+      },
+      "zh": {
+        "term": "反对",
+        "alternatives": [
+          "反对，传闻证据"
+        ],
+        "register": "legal"
+      }
+    },
+    "definition": {
+      "en": "A formal challenge to a question or evidence (e.g., hearsay), which the judge sustains or overrules.",
+      "es": "Una impugnación formal de una pregunta o prueba (p. ej., de oídas), que el juez estima o desestima.",
+      "zh": "对问题或证据的正式反对（例如传闻），由法官裁定成立或驳回。"
+    },
+    "distinctions": [
+      {
+        "contrast": "disagreement",
+        "difference": "An objection is a procedural act with legal grounds, not personal disagreement. 'Sustained/overruled' decides whether testimony continues — timing and exactness matter."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "objection-as-opinion",
+        "description": "Interpreting an objection as mere disagreement",
+        "diagnosticPrompt": "Attorney: 'Objection, hearsay.' Judge: 'Sustained.' Interpret both, keeping the procedural force."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Objection, hearsay. — Sustained.",
+        "es": "Objeción, testimonio de oídas. — Se estima.",
+        "zh": "反对，传闻证据。——反对成立。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "sentence-conditions",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "sentencing-conditions",
+      "sight-documents"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "terminology-usage",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "conditions of sentence / probation conditions",
+        "alternatives": [
+          "conditions"
+        ],
+        "register": "legal"
+      },
+      "es": {
+        "term": "condiciones de la sentencia / de la libertad condicional",
+        "alternatives": [
+          "condiciones"
+        ],
+        "register": "legal"
+      },
+      "zh": {
+        "term": "判决条件/缓刑条件",
+        "alternatives": [
+          "条件"
+        ],
+        "register": "legal"
+      }
+    },
+    "definition": {
+      "en": "Obligations and restrictions imposed as part of a sentence (reporting, no-contact, treatment, dates).",
+      "es": "Las obligaciones y restricciones impuestas como parte de una sentencia (comparecencias, no contacto, tratamiento, fechas).",
+      "zh": "作为判决一部分施加的义务和限制（报到、禁止接触、治疗、日期）。"
+    },
+    "distinctions": [
+      {
+        "contrast": "suggestions",
+        "difference": "Conditions are enforceable obligations with consequences, not suggestions. Modality ('must' vs. 'should') must be interpreted exactly."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "condition-modality",
+        "description": "Softening 'must' conditions into suggestions",
+        "diagnosticPrompt": "Judge: 'You must report within 72 hours.' What happens to the meaning if 'must' becomes 'should'?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "You must report to your probation officer within 72 hours.",
+        "es": "Debe presentarse ante su oficial de libertad condicional en un plazo de 72 horas.",
+        "zh": "您必须在72小时内向缓刑官报到。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "impartiality",
+    "domainId": "oregon-legal",
+    "areaIds": [
+      "professional-judgment-legal"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "ojd-court-interpreter"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "impartiality (interpreter)",
+        "alternatives": [
+          "interpreter impartiality"
+        ],
+        "register": "professional/legal"
+      },
+      "es": {
+        "term": "imparcialidad (del intérprete)",
+        "alternatives": [],
+        "register": "professional/legal"
+      },
+      "zh": {
+        "term": "公正性（口译员）",
+        "alternatives": [
+          "中立"
+        ],
+        "register": "professional/legal"
+      }
+    },
+    "definition": {
+      "en": "The interpreter interprets everything accurately without favoring any party, adding, omitting, or advising.",
+      "es": "El intérprete interpreta todo con precisión, sin favorecer a ninguna parte, sin añadir, omitir ni aconsejar.",
+      "zh": "口译员准确传译所有内容，不偏袒任何一方，不增删，不提供建议。"
+    },
+    "distinctions": [
+      {
+        "contrast": "helping one side",
+        "difference": "Explaining procedure through proper clarification is allowed; coaching, summarizing selectively, or advising a party breaks impartiality and the record."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "interpreter-as-advocate",
+        "description": "Slipping from interpreting into advising or advocating",
+        "diagnosticPrompt": "A defendant whispers: 'Just tell the judge I am sorry.' What does impartiality require the interpreter to do?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "I interpret everything that is said, for everyone, without taking sides.",
+        "es": "Interpreto todo lo que se dice, para todas las partes, sin tomar partido.",
+        "zh": "我为所有人传译所说的每一句话，不偏袒任何一方。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "representation-agreement",
+    "domainId": "ontario-real-estate",
+    "areaIds": [
+      "buyer-representation"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "reco-ontario"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "representation agreement",
+        "alternatives": [
+          "buyer representation agreement"
+        ],
+        "register": "legal/real-estate"
+      },
+      "es": {
+        "term": "acuerdo de representación",
+        "alternatives": [
+          "contrato de representación del comprador"
+        ],
+        "register": "legal/real-estate"
+      },
+      "zh": {
+        "term": "代理协议",
+        "alternatives": [
+          "买方代理协议"
+        ],
+        "register": "legal/real-estate"
+      }
+    },
+    "definition": {
+      "en": "The agreement that defines whether a brokerage represents you, and what duties it owes you — signed before loyalty can be assumed."
+    },
+    "distinctions": [
+      {
+        "contrast": "being a customer (no representation)",
+        "difference": "A represented client is owed loyalty and full duties; a customer is not. Interpreting one as the other misstates who protects whom."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "representation-assumed",
+        "description": "Assuming representation without agreement",
+        "diagnosticPrompt": "The buyer says 'my agent' but signed nothing. What must the interpretation preserve about choice?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Before we view homes, we sign a representation agreement so my duties to you are clear.",
+        "es": "Antes de ver viviendas, firmamos un acuerdo de representación para que mis obligaciones con usted queden claras.",
+        "zh": "在看房之前，我们先签署代理协议，明确我对您的义务。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "agreement-purchase-sale",
+    "domainId": "ontario-real-estate",
+    "areaIds": [
+      "offer-conditions"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "professional-terminology",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "reco-ontario"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "Agreement of Purchase and Sale (APS)",
+        "alternatives": [
+          "APS"
+        ],
+        "register": "legal/real-estate"
+      },
+      "es": {
+        "term": "acuerdo de compraventa",
+        "alternatives": [
+          "contrato de compraventa (APS)"
+        ],
+        "register": "legal/real-estate"
+      },
+      "zh": {
+        "term": "买卖协议",
+        "alternatives": [
+          "购售协议 (APS)"
+        ],
+        "register": "legal/real-estate"
+      }
+    },
+    "definition": {
+      "en": "The binding contract to buy and sell the property on stated price, deposit, conditions, and closing date."
+    },
+    "distinctions": [
+      {
+        "contrast": "verbal understanding",
+        "difference": "The APS binds in writing; a handshake understanding does not. Register and exactness protect both sides."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "offer-as-final",
+        "description": "Treating a conditional offer as a completed sale",
+        "diagnosticPrompt": "The offer has a financing condition. Has the home been sold? Interpret the status exactly."
+      }
+    ],
+    "examples": [
+      {
+        "en": "This Agreement of Purchase and Sale becomes firm when the conditions are waived or fulfilled.",
+        "es": "Este acuerdo de compraventa queda firme cuando las condiciones se cumplen o se renuncian.",
+        "zh": "当条件得到满足或被放弃时，本买卖协议即告确定。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "deposit",
+    "domainId": "ontario-real-estate",
+    "areaIds": [
+      "offer-conditions"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology",
+      "bilingual-terminology"
+    ],
+    "sourceIds": [
+      "reco-ontario"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "deposit (real estate)",
+        "alternatives": [],
+        "register": "legal/real-estate"
+      },
+      "es": {
+        "term": "depósito",
+        "alternatives": [
+          "anticipo en garantía"
+        ],
+        "register": "legal/real-estate"
+      },
+      "zh": {
+        "term": "订金",
+        "alternatives": [
+          "保证金"
+        ],
+        "register": "legal/real-estate"
+      }
+    },
+    "definition": {
+      "en": "Money held in trust as security with the offer — not the down payment itself, though it forms part of it on closing."
+    },
+    "distinctions": [
+      {
+        "contrast": "down payment",
+        "difference": "Deposit = trust money with the offer. Down payment = total equity at closing. Confusing them misstates what is owed when."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "deposit-equals-downpayment",
+        "description": "Merging deposit and down payment",
+        "diagnosticPrompt": "Deposit $20,000, price $800,000, down payment 20%. How much is held in trust today?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "The deposit is held in the brokerage trust account until closing.",
+        "es": "El depósito se mantiene en la cuenta fiduciaria de la correduría hasta el cierre.",
+        "zh": "订金在成交前存放在经纪公司的信托账户中。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "offer-conditions",
+    "domainId": "ontario-real-estate",
+    "areaIds": [
+      "offer-conditions"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "reco-ontario"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "conditions (financing / inspection)",
+        "alternatives": [
+          "conditional offer"
+        ],
+        "register": "legal/real-estate"
+      },
+      "es": {
+        "term": "condiciones (financiación / inspección)",
+        "alternatives": [
+          "oferta condicional"
+        ],
+        "register": "legal/real-estate"
+      },
+      "zh": {
+        "term": "条件（贷款/验房）",
+        "alternatives": [
+          "附条件要约"
+        ],
+        "register": "legal/real-estate"
+      }
+    },
+    "definition": {
+      "en": "Requirements that must be fulfilled or waived by a deadline for the deal to become firm — e.g., financing, home inspection."
+    },
+    "distinctions": [
+      {
+        "contrast": "firm offer",
+        "difference": "Conditional = exit exists until the deadline. Firm = bound now. One word changes whether a buyer can walk away."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "condition-as-formality",
+        "description": "Treating conditions as paperwork",
+        "diagnosticPrompt": "Interpret: 'This offer is conditional on inspection for five business days.' What right does the buyer hold?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "This offer is conditional on a satisfactory home inspection within five business days.",
+        "es": "Esta oferta está condicionada a una inspección satisfactoria de la vivienda en un plazo de cinco días laborables.",
+        "zh": "本要约附带条件：须在五个工作日内完成满意的房屋检查。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "disclosure-statement",
+    "domainId": "ontario-real-estate",
+    "areaIds": [
+      "disclosure"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "reco-ontario"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "Seller Property Information Statement (SPIS)",
+        "alternatives": [
+          "disclosure statement"
+        ],
+        "register": "legal/real-estate"
+      },
+      "es": {
+        "term": "declaración de información de la propiedad del vendedor",
+        "alternatives": [
+          "declaración de divulgación"
+        ],
+        "register": "legal/real-estate"
+      },
+      "zh": {
+        "term": "卖方物业信息声明",
+        "alternatives": [
+          "披露声明"
+        ],
+        "register": "legal/real-estate"
+      }
+    },
+    "definition": {
+      "en": "The seller's written answers about known property condition — what is known, not a warranty about what is unknown."
+    },
+    "distinctions": [
+      {
+        "contrast": "warranty",
+        "difference": "Disclosure reports knowledge; warranty guarantees condition. Upgrading one into the other invents a promise."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "disclosure-as-warranty",
+        "description": "Interpreting disclosure as guarantee",
+        "diagnosticPrompt": "Seller disclosed 'no known leaks.' The roof leaks. Interpret what was actually promised."
+      }
+    ],
+    "examples": [
+      {
+        "en": "The seller discloses no known water problems, to the best of their knowledge.",
+        "es": "El vendedor declara que, según su leal saber, no conoce problemas de agua.",
+        "zh": "卖方据其所知披露并无已知漏水问题。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "closing-day",
+    "domainId": "ontario-real-estate",
+    "areaIds": [
+      "closing-funds"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "terminology-usage"
+    ],
+    "sourceIds": [
+      "reco-ontario"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "closing (real estate)",
+        "alternatives": [
+          "closing day",
+          "completion"
+        ],
+        "register": "legal/real-estate"
+      },
+      "es": {
+        "term": "cierre",
+        "alternatives": [
+          "día de cierre",
+          "formalización"
+        ],
+        "register": "legal/real-estate"
+      },
+      "zh": {
+        "term": "交割",
+        "alternatives": [
+          "成交日"
+        ],
+        "register": "legal/real-estate"
+      }
+    },
+    "definition": {
+      "en": "The day title, funds, and keys transfer and the transaction completes — after adjustments are settled."
+    },
+    "distinctions": [
+      {
+        "contrast": "possession date in a lease",
+        "difference": "Closing transfers ownership; possession under a lease transfers use. Same calendar word family, different rights."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "On closing, funds and keys are exchanged through the lawyers.",
+        "es": "En el cierre, los fondos y las llaves se intercambian a través de los abogados.",
+        "zh": "在交割日，资金和钥匙通过律师进行交换。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "land-transfer-tax",
+    "domainId": "ontario-real-estate",
+    "areaIds": [
+      "closing-funds"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "reco-ontario"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "land transfer tax",
+        "alternatives": [],
+        "register": "institutional"
+      },
+      "es": {
+        "term": "impuesto de transferencia de tierras",
+        "alternatives": [
+          "impuesto de transmisión patrimonial"
+        ],
+        "register": "institutional"
+      },
+      "zh": {
+        "term": "土地转让税",
+        "alternatives": [],
+        "register": "institutional"
+      }
+    },
+    "definition": {
+      "en": "Ontario tax payable by the buyer on the transfer of land, calculated on consideration, due on closing (plus Toronto's municipal tax where applicable)."
+    },
+    "distinctions": [
+      {
+        "contrast": "property tax",
+        "difference": "Land transfer tax is one-time on purchase; property tax recurs annually. Buyers budgeting one as the other are surprised at closing."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "transfer-vs-property-tax",
+        "description": "Merging one-time and recurring taxes",
+        "diagnosticPrompt": "Which tax is due only on closing day? Interpret the buyer's two obligations separately."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Land transfer tax is payable on closing, separate from annual property tax.",
+        "es": "El impuesto de transferencia se paga en el cierre, aparte del impuesto anual a la propiedad.",
+        "zh": "土地转让税在交割时缴纳，与年度房产税分开。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "soil-ph",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "soil-prep"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "soil pH",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "es": {
+        "term": "pH del suelo",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "zh": {
+        "term": "土壤酸碱度",
+        "alternatives": [
+          "土壤pH值"
+        ],
+        "register": "professional/agricultural"
+      }
+    },
+    "definition": {
+      "en": "How acidic or alkaline the soil is (0–14) — it controls whether nutrients are available to the crop at all."
+    },
+    "distinctions": [
+      {
+        "contrast": "soil fertility (nutrient amount)",
+        "difference": "Fertile soil at the wrong pH still starves plants: nutrients lock up. pH is availability, not quantity."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "ph-as-fertility",
+        "description": "Treating pH as fertilizer amount",
+        "diagnosticPrompt": "Test says pH 5.2, nutrients adequate. Why might blueberries thrive and beans struggle? Interpret without adding rates."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Your soil pH is 5.8, slightly acidic, so lime is recommended before planting.",
+        "es": "El pH de su suelo es 5,8, ligeramente ácido, por lo que se recomienda cal antes de sembrar.",
+        "zh": "您的土壤酸碱度为5.8，略偏酸，因此建议种植前施用石灰。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "amendment",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "soil-prep"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "terminology-usage"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "soil amendment",
+        "alternatives": [
+          "amendment"
+        ],
+        "register": "professional/agricultural"
+      },
+      "es": {
+        "term": "enmienda del suelo",
+        "alternatives": [
+          "mejorador del suelo"
+        ],
+        "register": "professional/agricultural"
+      },
+      "zh": {
+        "term": "土壤改良剂",
+        "alternatives": [
+          "土壤调理剂"
+        ],
+        "register": "professional/agricultural"
+      }
+    },
+    "definition": {
+      "en": "Material added to improve soil structure or chemistry (compost, lime, sulfur) — distinct from fertilizer that feeds plants directly."
+    },
+    "distinctions": [
+      {
+        "contrast": "fertilizer",
+        "difference": "Amendments fix the soil; fertilizer feeds the plant. Swapping them changes what the grower buys and spreads."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "amendment-as-fertilizer",
+        "description": "Merging amendment and fertilizer",
+        "diagnosticPrompt": "Agent: 'Add compost as an amendment, then fertilize at planting.' Interpret both acts distinctly."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Compost is an amendment for structure; fertilizer comes later at planting.",
+        "es": "El compost es una enmienda para la estructura; el fertilizante viene después, al sembrar.",
+        "zh": "堆肥是改善结构的改良剂；肥料在种植时再施。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "germination",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "planting-calendar"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "germination",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "es": {
+        "term": "germinación",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "zh": {
+        "term": "发芽",
+        "alternatives": [
+          "萌发"
+        ],
+        "register": "professional/agricultural"
+      }
+    },
+    "definition": {
+      "en": "The seed sprouting and emerging — dependent on moisture, temperature, and seed viability, before any harvest question exists."
+    },
+    "distinctions": [
+      {
+        "contrast": "emergence vs. germination (field use)",
+        "difference": "Germination begins below ground; emergence is the shoot breaking the surface. Field talk mixes them — interpreters keep the stage the speaker meant."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "Germination takes seven to ten days at this soil temperature.",
+        "es": "La germinación tarda de siete a diez días a esta temperatura del suelo.",
+        "zh": "在此土壤温度下，发芽需要七到十天。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "frost-date",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "planting-calendar"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "last frost date (average)",
+        "alternatives": [
+          "frost-free date"
+        ],
+        "register": "professional/agricultural"
+      },
+      "es": {
+        "term": "fecha media de la última helada",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "zh": {
+        "term": "平均终霜日",
+        "alternatives": [
+          "无霜期开始日"
+        ],
+        "register": "professional/agricultural"
+      }
+    },
+    "definition": {
+      "en": "The average spring date after which frost risk drops — a probability guide, not a guarantee against a late freeze."
+    },
+    "distinctions": [
+      {
+        "contrast": "guaranteed frost-free day",
+        "difference": "An average still carries risk on both sides. Interpreting it as a promise plants tender crops into a freeze."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "frost-average-as-promise",
+        "description": "Rendering average frost date as guarantee",
+        "diagnosticPrompt": "Interpret: 'Average last frost is April 15.' What must survive about uncertainty?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Average last frost is mid-April, but tender starts still need watching.",
+        "es": "La última helada media es a mediados de abril, pero los plantones sensibles aún necesitan vigilancia.",
+        "zh": "平均终霜日在四月中旬，但娇嫩的幼苗仍需留意。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "irrigation-scheduling",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "irrigation-water"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "terminology-usage"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "irrigation scheduling",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "es": {
+        "term": "programación del riego",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "zh": {
+        "term": "灌溉计划",
+        "alternatives": [
+          "灌溉调度"
+        ],
+        "register": "professional/agricultural"
+      }
+    },
+    "definition": {
+      "en": "Deciding when and how much to water from soil moisture, crop stage, and weather — not a fixed calendar habit."
+    },
+    "distinctions": [
+      {
+        "contrast": "watering amount alone",
+        "difference": "Scheduling joins timing + amount + crop stage. 'Water more' without 'when' drowns roots as reliably as drought starves them."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "more-water-always",
+        "description": "Interpreting scheduling as simply more water",
+        "diagnosticPrompt": "Grower: 'The schedule says skip tomorrow.' Interpret without turning it into 'water less overall.'"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Check soil moisture before irrigating; the schedule skips tomorrow after rain.",
+        "es": "Revise la humedad del suelo antes de regar; la programación omite mañana después de la lluvia.",
+        "zh": "灌溉前检查土壤湿度；下雨后计划明天跳过一次。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "integrated-pest-management",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "pest-management"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "integrated pest management (IPM)",
+        "alternatives": [
+          "IPM"
+        ],
+        "register": "professional/agricultural"
+      },
+      "es": {
+        "term": "manejo integrado de plagas (MIP)",
+        "alternatives": [
+          "MIP"
+        ],
+        "register": "professional/agricultural"
+      },
+      "zh": {
+        "term": "病虫害综合治理",
+        "alternatives": [
+          "综合防治 (IPM)"
+        ],
+        "register": "professional/agricultural"
+      }
+    },
+    "definition": {
+      "en": "Managing pests by monitoring, thresholds, and least-risk controls first — spraying is one tool, not the definition."
+    },
+    "distinctions": [
+      {
+        "contrast": "spraying on sight",
+        "difference": "IPM acts at economic thresholds after identification; calendar spraying acts regardless. The threshold is the expertise."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "ipm-as-spraying",
+        "description": "Reducing IPM to pesticide application",
+        "diagnosticPrompt": "Scout: 'Counts are below threshold, so we monitor.' Interpret the decision not to spray as action, not neglect."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Counts are below threshold, so under IPM we monitor and release beneficials first.",
+        "es": "Los conteos están por debajo del umbral, así que con MIP vigilamos y liberamos benéficos primero.",
+        "zh": "数量低于阈值，因此按综合治理先监测并释放天敌。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "pesticide-label",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "pest-management"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "professional-judgment",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "pesticide label (the law)",
+        "alternatives": [
+          "label directions"
+        ],
+        "register": "legal/agricultural"
+      },
+      "es": {
+        "term": "etiqueta del pesticida (es la ley)",
+        "alternatives": [
+          "instrucciones de la etiqueta"
+        ],
+        "register": "legal/agricultural"
+      },
+      "zh": {
+        "term": "农药标签（即法律）",
+        "alternatives": [
+          "标签说明"
+        ],
+        "register": "legal/agricultural"
+      }
+    },
+    "definition": {
+      "en": "The legally binding directions for a pesticide's use — rate, protective equipment, re-entry interval. Deviating is unlawful, not creative."
+    },
+    "distinctions": [
+      {
+        "contrast": "recommendation",
+        "difference": "A label binds; advice suggests. Interpreting label limits as tips invites illegal, unsafe application."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "label-as-advice",
+        "description": "Softening label law into advice",
+        "diagnosticPrompt": "Interpret: 'The label requires gloves and a 12-hour re-entry interval.' Keep every obligation."
+      }
+    ],
+    "examples": [
+      {
+        "en": "The label requires gloves and a twelve-hour re-entry interval — that is the law, not a tip.",
+        "es": "La etiqueta exige guantes y un intervalo de reingreso de doce horas: es la ley, no un consejo.",
+        "zh": "标签要求戴手套并遵守12小时再入间隔——这是法律，不是建议。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "harvest-window",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "harvest-records"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "harvest window",
+        "alternatives": [],
+        "register": "professional/agricultural"
+      },
+      "es": {
+        "term": "ventana de cosecha",
+        "alternatives": [
+          "periodo óptimo de cosecha"
+        ],
+        "register": "professional/agricultural"
+      },
+      "zh": {
+        "term": "收获窗口期",
+        "alternatives": [
+          "最佳收获期"
+        ],
+        "register": "professional/agricultural"
+      }
+    },
+    "definition": {
+      "en": "The limited period when the crop meets quality and market standards — early loses yield, late loses grade."
+    },
+    "distinctions": [
+      {
+        "contrast": "harvest date (single day)",
+        "difference": "A window is a range judged by readiness signs; a single date ignores weather and ripening spread."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "The harvest window opens next week, judged by color and firmness, not the calendar alone.",
+        "es": "La ventana de cosecha se abre la próxima semana, según color y firmeza, no solo el calendario.",
+        "zh": "收获窗口期下周开启，按颜色和硬度判断，不只看日历。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "traceability",
+    "domainId": "oregon-cultivation",
+    "areaIds": [
+      "harvest-records"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "osu-extension"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "traceability (lot tracking)",
+        "alternatives": [
+          "lot traceability"
+        ],
+        "register": "institutional"
+      },
+      "es": {
+        "term": "trazabilidad (por lotes)",
+        "alternatives": [],
+        "register": "institutional"
+      },
+      "zh": {
+        "term": "可追溯性（批次追踪）",
+        "alternatives": [],
+        "register": "institutional"
+      }
+    },
+    "definition": {
+      "en": "Records linking each harvested lot back to field, date, and handling so problems can be isolated and recalled precisely."
+    },
+    "distinctions": [
+      {
+        "contrast": "general farm diary",
+        "difference": "Traceability is lot-specific and auditable; a diary is narrative. Buyers and inspectors need the lot chain."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "Keep lot records so traceability holds from field to buyer.",
+        "es": "Mantenga registros por lote para que la trazabilidad se mantenga del campo al comprador.",
+        "zh": "保留批次记录，确保从田间到买家的可追溯性。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "residency-domicile",
+    "domainId": "california-tax",
+    "areaIds": [
+      "residency-status"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "ca-ftb"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "domicile vs. residency (California)",
+        "alternatives": [
+          "residency"
+        ],
+        "register": "legal/tax"
+      },
+      "es": {
+        "term": "domicilio frente a residencia (California)",
+        "alternatives": [
+          "residencia"
+        ],
+        "register": "legal/tax"
+      },
+      "zh": {
+        "term": "住所与居住地（加州）",
+        "alternatives": [
+          "居住地"
+        ],
+        "register": "legal/tax"
+      }
+    },
+    "definition": {
+      "en": "Domicile is your true permanent home; residency for California tax can attach by presence and purpose. They are related, not identical."
+    },
+    "distinctions": [
+      {
+        "contrast": "living in California (presence alone)",
+        "difference": "Presence, domicile, and statutory residency answer different questions. Collapsing them files the wrong return — or two."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "residency-as-presence",
+        "description": "Equating residency with simply being present",
+        "diagnosticPrompt": "Taxpayer: 'I only slept here for work.' Interpret why domicile still gets asked."
+      }
+    ],
+    "examples": [
+      {
+        "en": "California residency and domicile are separate questions, so we document both.",
+        "es": "La residencia y el domicilio en California son preguntas distintas, así que documentamos ambas.",
+        "zh": "加州的居住地和住所是两个不同的问题，因此两者都要记录。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "filing-status",
+    "domainId": "california-tax",
+    "areaIds": [
+      "residency-status"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "ca-ftb"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "filing status",
+        "alternatives": [],
+        "register": "legal/tax"
+      },
+      "es": {
+        "term": "estado civil tributario",
+        "alternatives": [
+          "categoría de declaración"
+        ],
+        "register": "legal/tax"
+      },
+      "zh": {
+        "term": "报税身份",
+        "alternatives": [
+          "申报状态"
+        ],
+        "register": "legal/tax"
+      }
+    },
+    "definition": {
+      "en": "The category (single, married filing jointly/separately, head of household) that sets brackets and many eligibility rules."
+    },
+    "distinctions": [
+      {
+        "contrast": "marital status (everyday)",
+        "difference": "Filing status is a tax category with tests (e.g., head of household), not just whether someone is married."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "status-as-marriage",
+        "description": "Treating filing status as plain marital status",
+        "diagnosticPrompt": "Interpret: 'Head of household has its own tests.' What must not be assumed from 'single parent'?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Your filing status sets the brackets, so we confirm it before any numbers.",
+        "es": "Su estado civil tributario define los tramos, así que lo confirmamos antes de cualquier cifra.",
+        "zh": "您的报税身份决定税档，因此我们先确认它再谈数字。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "withholding",
+    "domainId": "california-tax",
+    "areaIds": [
+      "income-reporting"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology",
+      "bilingual-terminology"
+    ],
+    "sourceIds": [
+      "ca-ftb"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "withholding",
+        "alternatives": [
+          "tax withholding"
+        ],
+        "register": "legal/tax"
+      },
+      "es": {
+        "term": "retención",
+        "alternatives": [
+          "retención de impuestos"
+        ],
+        "register": "legal/tax"
+      },
+      "zh": {
+        "term": "预扣税",
+        "alternatives": [
+          "代扣代缴"
+        ],
+        "register": "legal/tax"
+      }
+    },
+    "definition": {
+      "en": "Tax already taken from pay during the year and credited on the return — prepayment, not the final tax itself."
+    },
+    "distinctions": [
+      {
+        "contrast": "tax owed (final liability)",
+        "difference": "Withholding is what was prepaid; liability is what is owed. Refund or balance due is the difference — swapping terms panics or over-promises."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "withholding-as-tax",
+        "description": "Merging withholding with final tax",
+        "diagnosticPrompt": "W-2 shows $4,000 withheld. Is that 'the tax'? Interpret the preparer's next sentence carefully."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Withholding is the prepaid credit; your final tax is computed after.",
+        "es": "La retención es el crédito prepagado; su impuesto final se calcula después.",
+        "zh": "预扣税是已预缴的抵免；最终税额随后计算。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "estimated-payments",
+    "domainId": "california-tax",
+    "areaIds": [
+      "income-reporting"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "ca-ftb"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "estimated tax payments",
+        "alternatives": [
+          "estimated payments"
+        ],
+        "register": "legal/tax"
+      },
+      "es": {
+        "term": "pagos estimados de impuestos",
+        "alternatives": [
+          "pagos trimestrales estimados"
+        ],
+        "register": "legal/tax"
+      },
+      "zh": {
+        "term": "预估税款",
+        "alternatives": [
+          "季度预缴"
+        ],
+        "register": "legal/tax"
+      }
+    },
+    "definition": {
+      "en": "Periodic prepayments of expected tax on income without withholding (self-employment, investments), to avoid underpayment penalties."
+    },
+    "distinctions": [
+      {
+        "contrast": "paying at filing",
+        "difference": "Estimates pay as you earn through the year; filing settles the account. Waiting until April can add penalties even if the total matches."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "Without withholding, estimated payments keep you ahead of penalties.",
+        "es": "Sin retención, los pagos estimados le mantienen por delante de las sanciones.",
+        "zh": "没有预扣时，预估付款可帮助您避免罚款。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "deduction-vs-credit",
+    "domainId": "california-tax",
+    "areaIds": [
+      "deductions-credits"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "ca-ftb"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "deduction vs. credit",
+        "alternatives": [],
+        "register": "legal/tax"
+      },
+      "es": {
+        "term": "deducción frente a crédito",
+        "alternatives": [],
+        "register": "legal/tax"
+      },
+      "zh": {
+        "term": "扣除与抵免的区别",
+        "alternatives": [],
+        "register": "legal/tax"
+      }
+    },
+    "definition": {
+      "en": "A deduction lowers taxable income; a credit lowers the tax itself, dollar for dollar. Same dollars, different math entirely."
+    },
+    "distinctions": [
+      {
+        "contrast": "treating them as synonyms for 'savings'",
+        "difference": "$1,000 deduction at 9.3% saves ~$93; $1,000 credit saves $1,000. Swapping the words misprices advice by an order of magnitude."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "deduction-equals-credit",
+        "description": "Swapping deduction and credit",
+        "diagnosticPrompt": "Client hears '$1,000 credit' as '$1,000 deduction.' Interpret the preparer's correction with the math intact."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Remember: a deduction lowers income, a credit lowers the tax itself.",
+        "es": "Recuerde: una deducción reduce el ingreso, un crédito reduce el impuesto mismo.",
+        "zh": "请记住：扣除减少应税收入，抵免直接减少税额本身。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "sales-vs-use-tax",
+    "domainId": "california-tax",
+    "areaIds": [
+      "sales-use-tax"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "ca-ftb"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "sales tax vs. use tax",
+        "alternatives": [],
+        "register": "legal/tax"
+      },
+      "es": {
+        "term": "impuesto sobre ventas frente a impuesto sobre uso",
+        "alternatives": [],
+        "register": "legal/tax"
+      },
+      "zh": {
+        "term": "销售税与使用税的区别",
+        "alternatives": [],
+        "register": "legal/tax"
+      }
+    },
+    "definition": {
+      "en": "Sales tax is collected by the seller at purchase; use tax is owed by the buyer when sales tax was not collected on goods used in California."
+    },
+    "distinctions": [
+      {
+        "contrast": "one 'shopping tax'",
+        "difference": "Who collects and who remits flips between the two. An owner who only knows 'sales tax' misses use-tax liability on out-of-state equipment."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "sales-equals-use",
+        "description": "Collapsing sales and use tax",
+        "diagnosticPrompt": "Owner bought equipment online, tax-free. Interpret why use tax still gets assessed."
+      }
+    ],
+    "examples": [
+      {
+        "en": "If sales tax was not collected, use tax may still be owed in California.",
+        "es": "Si no se cobró el impuesto sobre ventas, aún puede deberse el impuesto sobre uso en California.",
+        "zh": "如果未征收销售税，在加州可能仍需缴纳使用税。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "notice-protest",
+    "domainId": "california-tax",
+    "areaIds": [
+      "notices-appeals"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "professional-judgment",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "ca-ftb"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "Notice of Proposed Assessment — protest deadline",
+        "alternatives": [
+          "protest (FTB)"
+        ],
+        "register": "legal/tax"
+      },
+      "es": {
+        "term": "notificación de liquidación propuesta — plazo de protesta",
+        "alternatives": [
+          "protesta (FTB)"
+        ],
+        "register": "legal/tax"
+      },
+      "zh": {
+        "term": "拟议评税通知——抗议期限",
+        "alternatives": [
+          "抗议 (FTB)"
+        ],
+        "register": "legal/tax"
+      }
+    },
+    "definition": {
+      "en": "FTB's proposed additional tax notice; protesting in writing within the stated deadline (commonly 60 days) preserves appeal rights."
+    },
+    "distinctions": [
+      {
+        "contrast": "paying or ignoring until later",
+        "difference": "The protest deadline is jurisdictional in effect: miss it and the assessment can become final. Dates here are rights, not reminders."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "deadline-as-reminder",
+        "description": "Rendering protest deadline as flexible reminder",
+        "diagnosticPrompt": "Interpret: 'You have 60 days to protest in writing.' What happens to tone if 'deadline' becomes 'when you can'?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "This notice gives you sixty days to protest in writing — that deadline protects your rights.",
+        "es": "Esta notificación le da sesenta días para protestar por escrito: ese plazo protege sus derechos.",
+        "zh": "本通知给予您六十天书面抗议期——该期限保护您的权利。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "machine-learning-model",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "model-basics"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge",
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "machine learning model",
+        "alternatives": [
+          "ML model",
+          "model"
+        ],
+        "register": "technical"
+      },
+      "es": {
+        "term": "modelo de aprendizaje automático",
+        "alternatives": [
+          "modelo de machine learning"
+        ],
+        "register": "technical"
+      },
+      "zh": {
+        "term": "机器学习模型",
+        "alternatives": [
+          "ML模型"
+        ],
+        "register": "technical"
+      }
+    },
+    "definition": {
+      "en": "A program trained on data to make predictions or generate content — not the whole product built around it."
+    },
+    "distinctions": [
+      {
+        "contrast": "AI system / product",
+        "difference": "The model is one component; the system adds data, guardrails, UI, and policy. Product copy that swaps them over-claims."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "model-equals-product",
+        "description": "Translating model as the whole AI product",
+        "diagnosticPrompt": "Spanish: 'Nuestro modelo responde en la app.' What two layers must English keep apart?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "The model generates a draft; the product decides what ships.",
+        "es": "El modelo genera un borrador; el producto decide qué se publica.",
+        "zh": "模型生成草稿；产品决定发布什么。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "training-data",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "model-basics"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "training data",
+        "alternatives": [],
+        "register": "technical"
+      },
+      "es": {
+        "term": "datos de entrenamiento",
+        "alternatives": [],
+        "register": "technical"
+      },
+      "zh": {
+        "term": "训练数据",
+        "alternatives": [],
+        "register": "technical"
+      }
+    },
+    "definition": {
+      "en": "The examples used to teach a model during training — distinct from the live inputs users send later."
+    },
+    "distinctions": [
+      {
+        "contrast": "user data / prompts at runtime",
+        "difference": "Training data shaped the model beforehand; prompts arrive after. Privacy copy that merges them misleads users about what was learned from them."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "training-equals-user-data",
+        "description": "Merging training data with runtime user data",
+        "diagnosticPrompt": "Interpret: 'No entrenamos con tus mensajes.' Keep training and runtime apart."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Training data teaches the model; your prompt today does not retrain it.",
+        "es": "Los datos de entrenamiento enseñan al modelo; tu mensaje de hoy no lo reentrena.",
+        "zh": "训练数据用于教模型；您今天的提示不会重新训练它。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "ai-hallucination",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "generation-risks"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "meaning-transfer",
+      "professional-judgment"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "hallucination (AI)",
+        "alternatives": [
+          "AI hallucination",
+          "confabulation (technical writing)"
+        ],
+        "register": "technical"
+      },
+      "es": {
+        "term": "alucinación (IA)",
+        "alternatives": [
+          "alucinación de la IA"
+        ],
+        "register": "technical"
+      },
+      "zh": {
+        "term": "幻觉（人工智能）",
+        "alternatives": [
+          "AI幻觉"
+        ],
+        "register": "technical"
+      }
+    },
+    "definition": {
+      "en": "Fluent model output that is false or unsupported — stated with confidence, which is exactly why the word matters."
+    },
+    "distinctions": [
+      {
+        "contrast": "hallucination (medical symptom)",
+        "difference": "Same word, different world: here it is a system failure mode, not a patient symptom. Domain decides the sense — tenancy in your head."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "hallucination-softened",
+        "description": "Softening hallucination into 'small error' in risk copy",
+        "diagnosticPrompt": "Marketing wants 'occasional inaccuracies' for 'hallucinations.' Interpret the safety lead's refusal exactly."
+      }
+    ],
+    "examples": [
+      {
+        "en": "The model can hallucinate citations that do not exist.",
+        "es": "El modelo puede alucinar citas que no existen.",
+        "zh": "模型可能会虚构不存在的引用。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "prompt",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "generation-risks"
+    ],
+    "difficulty": 1,
+    "competences": [
+      "professional-terminology",
+      "bilingual-terminology"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "prompt",
+        "alternatives": [
+          "input prompt"
+        ],
+        "register": "technical/product"
+      },
+      "es": {
+        "term": "prompt",
+        "alternatives": [
+          "instrucción",
+          "mensaje del usuario (UI)"
+        ],
+        "register": "technical/product"
+      },
+      "zh": {
+        "term": "提示词",
+        "alternatives": [
+          "提示"
+        ],
+        "register": "technical/product"
+      }
+    },
+    "definition": {
+      "en": "The instruction/input given to a generative model. In Spanish product work 'prompt' often stays borrowed — style guide decides."
+    },
+    "distinctions": [
+      {
+        "contrast": "command / order (everyday)",
+        "difference": "A prompt can be a question, example, or document — not only an order. Calquing 'comando' narrows the product's English."
+      }
+    ],
+    "misconceptions": [],
+    "examples": [
+      {
+        "en": "Write a prompt that gives the model an example first.",
+        "es": "Escribe un prompt que primero le dé un ejemplo al modelo.",
+        "zh": "编写一个先给模型示例的提示词。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "guardrails",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "generation-risks"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "professional-judgment",
+      "meaning-transfer"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "guardrails",
+        "alternatives": [
+          "safety guardrails"
+        ],
+        "register": "technical/product"
+      },
+      "es": {
+        "term": "barreras de seguridad",
+        "alternatives": [
+          "guardarraíles (calque — avoid)",
+          "controles de seguridad"
+        ],
+        "register": "technical/product"
+      },
+      "zh": {
+        "term": "护栏（安全护栏）",
+        "alternatives": [
+          "安全控制"
+        ],
+        "register": "technical/product"
+      }
+    },
+    "definition": {
+      "en": "Controls that constrain model behavior (filters, policies, checks) — product teams keep the English metaphor or localize deliberately, never by calque accident."
+    },
+    "distinctions": [
+      {
+        "contrast": "censorship (loaded everyday sense)",
+        "difference": "Guardrails include quality and privacy checks, not only content blocking. A loaded rendering starts an argument the source never made."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "guardrail-calque",
+        "description": "Literal calque of guardrails",
+        "diagnosticPrompt": "Draft says 'guardarraíles.' What does the style-guide-aware rendering choose, and why?"
+      }
+    ],
+    "examples": [
+      {
+        "en": "Guardrails block the request before the model answers.",
+        "es": "Las barreras de seguridad bloquean la solicitud antes de que el modelo responda.",
+        "zh": "安全护栏在模型回答之前阻止该请求。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "inference",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "serving-scale"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "inference (ML)",
+        "alternatives": [
+          "model inference"
+        ],
+        "register": "technical"
+      },
+      "es": {
+        "term": "inferencia",
+        "alternatives": [
+          "inferencia del modelo"
+        ],
+        "register": "technical"
+      },
+      "zh": {
+        "term": "推理（机器学习）",
+        "alternatives": [
+          "模型推理"
+        ],
+        "register": "technical"
+      }
+    },
+    "definition": {
+      "en": "Running a trained model to produce an output — the using, not the teaching. (Not logical deduction in everyday prose.)"
+    },
+    "distinctions": [
+      {
+        "contrast": "training",
+        "difference": "Training builds the model once (or periodically); inference uses it per request. Latency and cost live in inference — swapping the words misplaces the engineering."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "inference-as-training",
+        "description": "Swapping inference and training",
+        "diagnosticPrompt": "Spanish: 'La inferencia tarda 200 ms.' Interpret without implying retraining per tap."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Inference runs in 200 milliseconds on device.",
+        "es": "La inferencia se ejecuta en 200 milisegundos en el dispositivo.",
+        "zh": "推理在设备上200毫秒内运行。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "token",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "serving-scale"
+    ],
+    "difficulty": 2,
+    "competences": [
+      "professional-terminology"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "token (language model)",
+        "alternatives": [],
+        "register": "technical"
+      },
+      "es": {
+        "term": "token",
+        "alternatives": [
+          "unidad de texto (explanatory)"
+        ],
+        "register": "technical"
+      },
+      "zh": {
+        "term": "词元",
+        "alternatives": [
+          "token"
+        ],
+        "register": "technical"
+      }
+    },
+    "definition": {
+      "en": "A chunk of text (often sub-word) that models read and generate in, and that pricing/limits count — not a coin, not quite a word."
+    },
+    "distinctions": [
+      {
+        "contrast": "word",
+        "difference": "Tokens split words ('unbelievable' → pieces). Limits quoted in tokens surprise users who count words — good interpreting flags the unit."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "token-equals-word",
+        "description": "Translating token as word",
+        "diagnosticPrompt": "Limit: '4,000 tokens.' Interpret so a Spanish writer does not budget 4,000 words."
+      }
+    ],
+    "examples": [
+      {
+        "en": "This plan includes 4,000 tokens per response, roughly 3,000 words.",
+        "es": "Este plan incluye 4.000 tokens por respuesta, unas 3.000 palabras.",
+        "zh": "此方案每次响应包含4,000个词元，约3,000个词。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "embedding",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "serving-scale"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "embedding",
+        "alternatives": [
+          "vector embedding"
+        ],
+        "register": "technical"
+      },
+      "es": {
+        "term": "embedding",
+        "alternatives": [
+          "representación vectorial",
+          "incrustación (avoid)"
+        ],
+        "register": "technical"
+      },
+      "zh": {
+        "term": "嵌入向量",
+        "alternatives": [
+          "向量嵌入"
+        ],
+        "register": "technical"
+      }
+    },
+    "definition": {
+      "en": "A numeric vector representing meaning so similar texts sit near each other — the geometry search and recommendations run on."
+    },
+    "distinctions": [
+      {
+        "contrast": "embedded (hardware) / incrustación",
+        "difference": "An embedding is a meaning-vector, not a chip and not a jewel setting. The false friend embarrasses docs in both directions."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "embedding-false-friend",
+        "description": "Rendering embedding as incrustación/hardware",
+        "diagnosticPrompt": "Draft: 'incrustaciones de texto.' Repair it for an engineering reader."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Search compares embeddings to find meaning, not keywords.",
+        "es": "La búsqueda compara embeddings para encontrar significado, no palabras clave.",
+        "zh": "搜索比较嵌入向量以找到含义，而非关键词。"
+      }
+    ],
+    "relationships": []
+  },
+  {
+    "conceptId": "fine-tuning",
+    "domainId": "ai-technology",
+    "areaIds": [
+      "product-strings"
+    ],
+    "difficulty": 3,
+    "competences": [
+      "domain-knowledge",
+      "terminology-usage"
+    ],
+    "sourceIds": [
+      "ai-glossary"
+    ],
+    "inferred": false,
+    "terms": {
+      "en": {
+        "term": "fine-tuning",
+        "alternatives": [
+          "fine-tune (verb)"
+        ],
+        "register": "technical"
+      },
+      "es": {
+        "term": "ajuste fino",
+        "alternatives": [
+          "fine-tuning"
+        ],
+        "register": "technical"
+      },
+      "zh": {
+        "term": "微调",
+        "alternatives": [],
+        "register": "technical"
+      }
+    },
+    "definition": {
+      "en": "Further training a pretrained model on narrower data to specialize it — more than prompting, less than training from scratch."
+    },
+    "distinctions": [
+      {
+        "contrast": "prompting / configuration",
+        "difference": "Fine-tuning changes model weights; prompting changes only the input. Sales copy that confuses them promises learning the product never does."
+      }
+    ],
+    "misconceptions": [
+      {
+        "tag": "finetune-as-settings",
+        "description": "Presenting fine-tuning as user settings",
+        "diagnosticPrompt": "Interpret: 'No ajustamos el modelo con tus datos.' Keep weights vs. settings apart."
+      }
+    ],
+    "examples": [
+      {
+        "en": "Fine-tuning specializes the model; a prompt only instructs it once.",
+        "es": "El ajuste fino especializa el modelo; un prompt solo le da una instrucción una vez.",
+        "zh": "微调使模型专业化；提示词只指示一次。"
+      }
+    ],
+    "relationships": []
+  }
+]
