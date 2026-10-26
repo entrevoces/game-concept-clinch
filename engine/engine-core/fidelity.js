@@ -2,6 +2,21 @@
 // Deliberately conservative: classifies evidence, never emits a single "fluency score".
 
 const NEGATIONS = ["no", "not", "never", "n't", "ningún", "ninguna", "sin", "不", "没", "无"];
+const STOPWORDS = new Set(["the", "a", "an", "and", "or", "of", "to", "in", "on", "is", "are", "was", "were", "you", "we", "i", "it", "this", "that", "el", "la", "los", "las", "de", "en", "y", "que", "un", "una", "的", "是", "了", "在", "和", "您", "我们"]);
+function contentTokens(s) { return tokens(s).filter((w) => w.length >= 3 && !STOPWORDS.has(w)); }
+function stem(w) { return w.length > 6 ? w.slice(0, 6) : w; }
+function unitCovered(unit, outSet, outText) {
+  const ct = contentTokens(unit);
+  if (!ct.length) return true;
+  const hits = ct.filter((w) => outSet.has(w) || outText.includes(stem(w))).length;
+  return hits / ct.length >= 0.34; // one load-bearing word in three carries the unit
+}
+/** Split a source utterance into idea units (clauses) — what interpreters
+ * actually hold in memory, per Gile. Coverage is reported per unit so a
+ * learner sees WHICH idea survived, not a single opaque score. */
+export function ideaUnits(text) {
+  return (text || "").split(/(?<=[.;:!?])\s+|,\s+(?=(?:and|but|then|so)\b)|\n+/).map((u) => u.trim()).filter((u) => u.length >= 3);
+}
 const STRONG_MODALS = ["must", "shall", "required", "have to", "has to", "debe", "deberá", "deben", "obligado", "必须", "须"];
 const WEAK_MODALS = ["may", "might", "could", "can", "puede", "podría", "pueden", "可能", "可以"];
 const HEDGES = ["probably", "possibly", "maybe", "perhaps", "likely", "appears", "seems", "probablemente", "posiblemente", "tal vez", "quizás", "可能", "似乎"];
@@ -53,6 +68,15 @@ export function assessInterpretation({ sourceText = "", learnerText = "", concep
   const srcTokens = new Set(tokens(sourceText));
   const unsupportedNums = outNums.filter((n) => !srcNums.includes(n));
   unsupportedNums.forEach((n) => added.push(`number "${n}" was not in the source`));
+  // Spoken reality, in idea units: which clauses survived, which vanished,
+  // and what the learner added that nobody said (content-word additions).
+  const units = ideaUnits(sourceText).map((u) => ({ text: u, preserved: unitCovered(u, outTokens, out) }));
+  const coverage = units.length ? units.filter((u) => u.preserved).length / units.length : 1;
+  const droppedUnits = units.filter((u) => !u.preserved).map((u) => u.text);
+  const srcContent = new Set(contentTokens(sourceText));
+  const addedContent = [...new Set(contentTokens(learnerText))].filter((w) => !srcContent.has(w) && !expectedTerms.some((t) => t.includes(w)) && ![...(concept?.terms?.en?.alternatives || [])].some((a) => norm(a).includes(w)));
+  if (addedContent.length >= 3 && coverage >= 0.5) added.push(`added content not in the source: ${addedContent.slice(0, 5).join(", ")}`);
+  const compressionRatio = srcContent.size ? contentTokens(learnerText).length / srcContent.size : 1;
 
   const uncertainTranscription = transcriptConfidence < 0.65;
   let uncertainty = Math.max(0, Math.min(1, (1 - transcriptConfidence) * 0.7 + (omitted.length && preserved.length ? 0.15 : 0)));
@@ -64,10 +88,13 @@ export function assessInterpretation({ sourceText = "", learnerText = "", concep
     uncertainty = Math.max(uncertainty, 0.6);
   } else if (changed.length) {
     verdict = "distortion";
-    explanation = `Meaning changed: ${changed.join("; ")}.${consequential ? " In a professional setting this is consequential — it alters what the other party hears." : ""}`;
+    explanation = `Meaning changed: ${changed.join("; ")}.${consequential ? " In a professional setting this is consequential — it alters what the other party hears." : ""}${units.length >= 2 && coverage < 0.6 ? ` Also dropped: ${droppedUnits.map((u) => `“${u}”`).join("; ")} (coverage ${Math.round(coverage * 100)}%).` : ""}`;
   } else if (omitted.length && preserved.length === 0 && expectedTerms.length) {
     verdict = "omission";
     explanation = `Key terminology was omitted (${omitted.join(", ")}). The overall message may have arrived, but the professional distinction did not.`;
+  } else if (units.length >= 2 && coverage < 0.6) {
+    verdict = "omission";
+    explanation = `Idea units dropped: ${droppedUnits.map((u) => `“${u}”`).join("; ")}. Coverage ${Math.round(coverage * 100)}% — the shape arrived, whole ideas did not.`;
   } else if (omitted.length) {
     verdict = "omission";
     explanation = `Mostly preserved, but omitted: ${omitted.join(", ")}.`;
@@ -83,6 +110,7 @@ export function assessInterpretation({ sourceText = "", learnerText = "", concep
 
   return {
     verdict, preserved, omitted, changed, added,
+    ideaUnits: units, coverage: Math.round(coverage * 100) / 100, compressionRatio: Math.round(compressionRatio * 100) / 100,
     acceptableVariation: verdict === "acceptable-variation" || verdict === "faithful",
     consequential, uncertainty,
     correct: verdict === "faithful" || verdict === "acceptable-variation",

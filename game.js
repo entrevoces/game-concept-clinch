@@ -5,6 +5,7 @@
 // never advances mastery — the engine's 8 stages stay honest.
 import * as core from "./engine/engine-core/index.js";
 import { EngineClient } from "./engine/engine-client/engine-client.js";
+import { Juice } from "./engine/game-kit/juice.js";
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -477,6 +478,7 @@ function onKeys(e) {
   if (e.key === "Enter" && !$("#nextStepBtn").hidden) advance();
 }
 
+Juice.observeFeedback("#fbFeedback");
 boot().catch((e) => {
   $("#titleContext").textContent = `Could not load the engine (${e.message}). Reload to retry — the bundled seed keeps the rooms open.`;
   $("#startBtn").disabled = true;

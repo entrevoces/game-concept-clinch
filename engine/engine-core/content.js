@@ -59,7 +59,9 @@ export function generateItem({ concept, domain, area = null, stage = 2, targetLa
     prompt = `Say it as you would to the patient/client: explain "${en.term}" (${tgt?.term || ""}) in plain, appropriate language.`;
   } else {
     prompt = example?.en || `Interpret: "We need to discuss ${en.term} before we proceed."`;
-    expected = acceptable;
+    // Interpretation is judged on the carried sentence, not the bare term:
+    // the faithful example rendering leads the answer set.
+    expected = example?.[targetLang] ? [example[targetLang], ...acceptable] : acceptable;
   }
 
   return {
@@ -93,15 +95,21 @@ export function generatePracticeSet({ concepts = [], domain, targetLang = "es", 
         const key = `${item.conceptId}:${item.stage}:${item.prompt}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        items.push(item);
+        if (validateItems([item], { concepts }).invalid.length === 0) items.push(item); // rejected items never reach a learner
       }
     }
   }
   return items;
 }
 
-/** Validate generated items (spec §5.3 checks). Returns { valid, invalid:[{item, reasons}] } */
-export function validateItems(items = []) {
+/** Validate generated items (spec §5.3 checks). Returns { valid, invalid:[{item, reasons}] }
+ * Profound checks (not shape-checking): an item is rejected when its answers
+ * collide with a neighbour concept's term, when a Stage-8 interpretation item
+ * would be graded on a bare term instead of a carried sentence, when a
+ * Stage-1 item's choices lack the concept's own definition, or when the
+ * prompt leaks the target-language answer it claims to test. Pass
+ * { concepts } (the item's domain set) to enable collision checks. */
+export function validateItems(items = [], { concepts = [] } = {}) {
   const valid = [], invalid = [];
   const prompts = new Map();
   for (const item of items) {
@@ -110,6 +118,22 @@ export function validateItems(items = []) {
     if (!item.prompt) reasons.push("missing prompt");
     if (!Array.isArray(item.acceptableAnswers) || item.acceptableAnswers.length === 0) reasons.push("no acceptable answers");
     if (!item.sourceIds || item.sourceIds.length === 0) reasons.push("no sourceIds — cannot prove provenance");
+    if (item.stage === 8 && !(item.acceptableAnswers || []).some((a) => String(a).split(/\s+/).length >= 4)) reasons.push("stage-8 item graded on a bare term — interpretation needs a carried sentence");
+    if (item.stage === 1 && item.choices && concepts.length) {
+      const own = concepts.find((c) => c.conceptId === item.conceptId);
+      if (own?.definition?.en && !item.choices.includes(own.definition.en)) reasons.push("stage-1 choices do not include the concept's own definition");
+    }
+    if (concepts.length) {
+      const own = concepts.find((c) => c.conceptId === item.conceptId);
+      for (const a of item.acceptableAnswers || []) {
+        const clash = concepts.find((c) => c.conceptId !== item.conceptId && c.domainId === item.domainId && Object.values(c.terms || {}).some((t) => (t?.term || "").toLowerCase() === String(a).toLowerCase()));
+        if (clash) reasons.push(`acceptable answer "${a}" is ${clash.conceptId}'s term — the item grades a neighbour as correct`);
+      }
+      if (own && (item.stage === 2 || item.stage === 6)) {
+        const tgtTerm = own.terms?.[item.languageDirection?.split("->")[1]]?.term;
+        if (tgtTerm && item.prompt.toLowerCase().includes(tgtTerm.toLowerCase())) reasons.push("prompt leaks the target-language answer it claims to test");
+      }
+    }
     const dupKey = `${item.conceptId}:${item.stage}:${(item.prompt || "").toLowerCase()}`;
     if (prompts.has(dupKey)) reasons.push("duplicate/near-duplicate prompt");
     prompts.set(dupKey, true);

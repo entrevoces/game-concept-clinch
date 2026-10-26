@@ -142,12 +142,12 @@ export const GAME_CATALOG = [
   { gameId: "shift-consecutive", name: "Night Shift", verb: "ENDURE", stages: [6, 7, 8], promise: "Catch, stack notes, render whole turns live." },
   { gameId: "the-table", name: "The Table", verb: "NEGOTIATE", stages: [5, 8], promise: "Handle the turn strategically, then stand behind words." },
   { gameId: "bench-call", name: "Bench Call", verb: "DECIDE", stages: [3, 5], promise: "Sight paper and judgment, stamped on the record." },
-  { gameId: "repair-shop", name: "Repair Shop", verb: "REPAIR", stages: [7, 8], promise: "Hear betrayals in renderings and fix them." },
-  { gameId: "vr-lingua-lab", name: "Lingua Lab VR", verb: "IMMERSE", stages: [2, 5], promise: "Carry terms into English inside the lab (gaze/controllers)." },
+  { gameId: "repair-shop", name: "Repair Shop", verb: "REPAIR", stages: [7], promise: "Hear betrayals in renderings and fix them." },
+  { gameId: "vr-lingua-lab", name: "Lingua Lab VR", verb: "IMMERSE", stages: [2, 4], promise: "Carry terms into English inside the lab (gaze/controllers)." },
   { gameId: "vocab-craft", name: "VocabCraft", verb: "MINE & BUILD", stages: [2, 5], promise: "Mine term-blocks, craft the bridge, walk across it." },
   { gameId: "neon-bastion", name: "Neon Bastion", verb: "SHOOT", stages: [2, 6], promise: "Platform-shooter retrieval: blast only the true-equivalent drone." },
   { gameId: "melon-reef", name: "Melon Reef", verb: "DIVE", stages: [1, 5], promise: "Underwater listening harvest — hear it, swim it, surface with it." },
-  { gameId: "loteria-aula", name: "Lotería de Aula", verb: "GATHER", stages: [1, 2], promise: "The classroom lotería: one caller, every board listening. Group play, stealth assessment." },
+  { gameId: "loteria-aula", name: "Lotería de Aula", verb: "GATHER", stages: [1, 2, 8], promise: "The classroom lotería: one caller, every board listening. Group play, stealth assessment." },
   { gameId: "milonga-sentido", name: "Milonga del Sentido", verb: "FEEL", stages: [3, 4, 8], promise: "Cultural translation of tango: carry the vibe, unlock the classics." },
 ];
 
@@ -155,7 +155,9 @@ export const GAME_CATALOG = [
  * Ranked game suggestions aligned to the learner's actual gaps (player-facing).
  * Each suggestion names the gap it serves — no generic "play more."
  */
-export function recommendGames({ domain, concepts = [], learnerState, limit = 3, modes = [] }) {
+export function recommendGames({ domain, concepts = [], learnerState, limit = 3, modes = [], comfort = false }) {
+  const COMFORT_VERBS = new Set(["BUILD", "GATHER", "DIVE", "FEEL", "ECHO", "MINE & BUILD"]);
+  const PRESSURE = { "term-rush": "timed rain, three lives", "neon-bastion": "shield and shooting", "shift-consecutive": "live stamina night" };
   const modeGames = new Set((modes || []).flatMap((m) => (typeof m === "string" ? [] : m.games || [])));
   if (!learnerState || !concepts.length) {
     return [
@@ -177,7 +179,7 @@ export function recommendGames({ domain, concepts = [], learnerState, limit = 3,
   const scored = GAME_CATALOG.map((g) => {
     const best = Math.max(...g.stages.map((s) => stageGap.find((x) => x.stage === s)?.gap ?? 0));
     const gapStage = g.stages.reduce((a, s) => ((stageGap.find((x) => x.stage === s)?.gap ?? 0) > (stageGap.find((x) => x.stage === a)?.gap ?? 0) ? s : a), g.stages[0]);
-    return { ...g, gap: best + (modeGames.has(g.gameId) ? 0.25 : 0), gapStage, modeMatch: modeGames.has(g.gameId) };
+    return { ...g, gap: best + (modeGames.has(g.gameId) ? 0.25 : 0) + (comfort ? (COMFORT_VERBS.has(g.verb) ? 0.35 : -0.2) : 0), gapStage, modeMatch: modeGames.has(g.gameId), pressureNote: comfort ? (PRESSURE[g.gameId] || null) : null };
   }).sort((a, b) => b.gap - a.gap);
 
   return scored.slice(0, limit).map((g) => {
