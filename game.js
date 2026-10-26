@@ -1,485 +1,284 @@
-// Concept Clinch — produced scene game (spec §11.3, research §5)
-// Four proofs per concept, each a different cognitive act, each separate
-// engine evidence: Hear (recognize) → Build (produce) → Catch (distinguish
-// consequential distortion) → Teach-back (judge fidelity). Recognition alone
-// never advances mastery — the engine's 8 stages stay honest.
+// Voice Atelier — canvas studio (regen, game-spec-kit).
+// Four beats per client visit, all played on objects: hear (meaning orbs),
+// build (word tiles into a sentence strip), catch (two speech bubbles, one
+// betrays), teach-back (your own words). Mastered concepts furnish the shelf.
 import * as core from "./engine/engine-core/index.js";
 import { EngineClient } from "./engine/engine-client/engine-client.js";
 import { Juice } from "./engine/game-kit/juice.js";
-
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const cv = $("#game"), ctx = cv.getContext("2d");
+const W = 960, H = 540;
+const juice = new Juice(cv);
 const BEATS = [
-  { key: "hear", stage: 1, name: "Hear it", caption: "First proof: recognize what the term actually means when it is spoken." },
-  { key: "build", stage: 2, name: "Build it", caption: "Second proof: produce the equivalent yourself, tile by tile. No options to hide behind." },
-  { key: "catch", stage: 4, name: "Catch the distortion", caption: "Third proof: one rendering preserves the professional distinction. The other quietly breaks it." },
-  { key: "teachback", stage: 3, name: "Teach-back check", caption: "Final proof: judge whether their understanding is faithful — the real consent skill." },
+  { key: "hear", stage: 1, name: "Hear it" },
+  { key: "build", stage: 2, name: "Build it" },
+  { key: "catch", stage: 4, name: "Catch the betrayal" },
+  { key: "teachback", stage: 3, name: "Teach-back" },
 ];
-
-let engine, domain, concepts = [], targetLang = "es";
-let learnerState = null;
-let session = null; // { queue, qi, beatIndex, assisted, built, sessionCorrect, sessionTotal, startedAt }
-let timerId = null, timeLeft = 0;
-
-const PEOPLE = {
-  "oregon-medical": { a: ["María", "Patient"], bubbleName: "María", room: "Clinic — Exam Room 2" },
-  "oregon-legal": { a: ["Mr. Alvarez", "Defendant"], bubbleName: "Mr. Alvarez", room: "Courtroom — Department 4" },
-};
-
-// ---------- tiny sound design (WebAudio, no assets) ----------
-let audioCtx = null;
-function tone(freq, dur = 0.12, type = "sine", gain = 0.06, when = 0) {
-  try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type; o.frequency.value = freq;
-    g.gain.setValueAtTime(gain, audioCtx.currentTime + when);
-    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + when + dur);
-    o.connect(g).connect(audioCtx.destination);
-    o.start(audioCtx.currentTime + when); o.stop(audioCtx.currentTime + when + dur);
-  } catch { /* sound is garnish, never required */ }
-}
-const sfxGood = () => { tone(523, 0.1); tone(784, 0.14, "sine", 0.06, 0.08); };
-const sfxBad = () => tone(196, 0.18, "triangle", 0.05);
-const sfxTile = () => tone(392, 0.05, "sine", 0.03);
-
-// ---------- fx ----------
-function burst(good = true) {
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const layer = $("#fxLayer");
-  const colors = good ? ["#177a6c", "#c9a227", "#d99a3d"] : ["#bc4630", "#8a5a3b"];
-  for (let i = 0; i < 14; i++) {
-    const el = document.createElement("span");
-    el.className = "particle";
-    el.style.background = colors[i % colors.length];
-    el.style.left = `${44 + Math.random() * 12}%`; el.style.top = "42%";
-    layer.appendChild(el);
-    const dx = (Math.random() - 0.5) * 260, dy = -40 - Math.random() * 140;
-    el.animate([{ transform: "translate(0,0) scale(1)", opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(.4)`, opacity: 0 }], { duration: 750 + Math.random() * 350, easing: "cubic-bezier(.2,.8,.3,1)" }).onfinish = () => el.remove();
-  }
-  const note = document.createElement("span");
-  note.className = "float-note"; note.textContent = good ? "Understanding holds" : "That would mislead them";
-  note.style.left = "40%"; note.style.top = "36%"; note.style.color = good ? "#0f5a4f" : "#7c2718";
-  layer.appendChild(note); setTimeout(() => note.remove(), 1050);
-}
-function react(good) {
-  for (const id of ["#personA"]) {
-    const el = $(id);
-    el.classList.remove("react-good", "react-bad"); void el.offsetWidth;
-    el.classList.add(good ? "react-good" : "react-bad");
-    const mouth = el.querySelector(".mouth");
-    mouth.setAttribute("d", good ? "M49 44 Q60 54 71 44" : "M50 52 Q60 45 70 52");
-  }
-}
-
-// ---------- helpers ----------
-function params() { return new URLSearchParams(location.search); }
-function hubHref() {
-  const p = params();
-  return `https://entrevoces.github.io/apps/hub/?domain=${encodeURIComponent(engine?.domainId || p.get("domain") || "oregon-medical")}&learner=${encodeURIComponent(engine?.learnerId || p.get("learner") || "")}&engine=${encodeURIComponent(engine?.engineUrl || p.get("engine") || "")}`;
-}
-function showScreen(id) {
-  stopTimer();
-  document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("is-active", s.id === id));
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-function updateSyncBadge() {
-  const st = engine.status();
-  const b = $("#syncBadge");
-  b.textContent = st.online ? `Synced · ${st.pending} pending` : `Local-only · ${st.pending} queued — play is safe`;
-  b.className = `pill ${st.online ? "pill-on" : "pill-local"}`;
-  $("#hubLink").href = hubHref(); $("#endHubLink").href = hubHref();
-}
+const OBJECTS = ["lamp", "plant", "books", "chair", "clock", "vase", "radio", "teapot", "globe", "frame", "cactus", "cat"];
+let engine, domain, concepts = [], targetLang = "es", studio = { built: [], trust: 0 };
+let S = null, raf = null;
+function hubHref() { const p = new URLSearchParams(location.search); return `https://entrevoces.github.io/apps/hub/?domain=${encodeURIComponent(engine?.domainId || p.get("domain") || "oregon-medical")}&learner=${encodeURIComponent(engine?.learnerId || p.get("learner") || "")}&engine=${encodeURIComponent(engine?.engineUrl || p.get("engine") || "")}`; }
+function show(id) { if (raf) cancelAnimationFrame(raf); raf = null; document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("is-active", s.id === id)); }
 function tgtTerm(c) { return c.terms[targetLang]?.term || c.terms.es?.term || c.terms.en.term; }
 function exampleFor(c) { return c.examples?.[0] || { en: c.definition.en, es: c.definition.es || c.definition.en, zh: c.definition.zh || c.definition.en }; }
-function tokenize(sentence, lang) {
-  if (lang === "zh") return sentence.replace(/[。！？]/g, "").split(/(?<=[，、：；])/).map((s) => s.trim()).filter(Boolean).length > 1
-    ? sentence.replace(/[。！？]/g, "").split(/(?<=[，、：；])/).map((s) => s.trim()).filter(Boolean)
-    : [...sentence.replace(/[。！？\s]/g, "")].reduce((acc, ch, i) => { const k = Math.floor(i / 3); acc[k] = (acc[k] || "") + ch; return acc; }, []);
-  return sentence.replace(/[.!?]/g, "").split(/\s+/).filter(Boolean);
-}
 function shuffle(a) { const x = [...a]; for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; } return x; }
+function speak(text, lang) { try { const u = new SpeechSynthesisUtterance(text); u.lang = lang === "es" ? "es-ES" : lang === "zh" ? "zh-CN" : "en-US"; u.rate = 0.95; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch {} }
+function syncBadge() { const st = engine.status(); const b = $("#syncBadge"); b.textContent = st.online ? `Synced · ${st.pending} pending` : `Local-only · ${st.pending} queued`; b.className = `pill ${st.online ? "pill-on" : "pill-local"}`; $("#hubLink").href = hubHref(); $("#endHubLink").href = hubHref(); }
+function studioKey() { return `ev:atelier:${engine?.learnerId || "anon"}:${engine?.domainId || ""}`; }
+function loadStudio() { try { studio = JSON.parse(localStorage.getItem(studioKey()) || '{"built":[],"trust":0}'); } catch { studio = { built: [], trust: 0 }; } }
+function saveStudio() { try { localStorage.setItem(studioKey(), JSON.stringify(studio)); } catch {} }
+function tokenize(sentence) { return String(sentence || "").split(/\s+/).filter(Boolean); }
 
-// ---------- boot / title ----------
 async function boot() {
-  const p = params();
-  const customTitle = p.get("title"); if (customTitle) { const h = document.querySelector("h1"); if (h) h.textContent = customTitle; document.title = `${customTitle} · ENTRE VOCES`; }
+  const p = new URLSearchParams(location.search);
   targetLang = p.get("lang") || localStorage.getItem("ev:targetLang") || "es";
-  let fallbackConcepts = core.CONCEPTS;
-  try { const r = await fetch("concepts-subset.json"); if (r.ok) fallbackConcepts = await r.json(); } catch { /* bundled import fallback */ }
+  let fb = core.CONCEPTS; try { const r = await fetch("concepts-subset.json"); if (r.ok) fb = await r.json(); } catch {}
   const domainId = p.get("domain") || localStorage.getItem("ev:domainId") || "oregon-medical";
-  engine = new EngineClient({
-    engineUrl: p.get("engine") || localStorage.getItem("ev:engineUrl") || "http://127.0.0.1:8787",
-    learnerId: p.get("learner") || "", domainId, core,
-    fallbackDomain: core.SEED_DOMAINS.find((d) => d.domainId === domainId) || core.OREGON_MEDICAL,
-    fallbackConcepts,
-  });
+  engine = new EngineClient({ engineUrl: p.get("engine") || localStorage.getItem("ev:engineUrl") || "http://127.0.0.1:8787", learnerId: p.get("learner") || "", domainId, core, fallbackDomain: core.SEED_DOMAINS.find((d) => d.domainId === domainId) || core.OREGON_MEDICAL, fallbackConcepts: fb });
   await engine.init();
   domain = await engine.getDomain(engine.domainId);
   concepts = await engine.listConcepts(engine.domainId);
-  if (!concepts.length) concepts = fallbackConcepts.filter((c) => c.domainId === engine.domainId);
-  await refreshState();
+  if (!concepts.length) concepts = fb.filter((c) => c.domainId === engine.domainId);
   loadStudio();
-  renderTitle();
-  renderStudio();
+  syncBadge();
+  const state = await engine.getState(engine.domainId, concepts).catch(() => null);
+  const due = state?.dueForReview?.length || 0;
+  $("#dueBtn").hidden = due === 0;
+  $("#dueBtn").textContent = `Review what's due (${due})`;
+  $("#titleContext").textContent = `${domain?.label.en || engine.domainId} · shelf holds ${studio.built.length} built objects · trust ${studio.trust}.`;
   $("#startBtn").addEventListener("click", () => startSession());
   $("#dueBtn").addEventListener("click", () => startSession({ dueOnly: true }));
   $("#againBtn").addEventListener("click", () => startSession());
-  $("#mapBtn").addEventListener("click", () => { showScreen("screen-title"); renderTitle(); });
-  $("#nextStepBtn").addEventListener("click", advance);
   $("#quitBtn").addEventListener("click", endSession);
-  $("#hintBtn").addEventListener("click", useHint);
-  $("#clearTilesBtn").addEventListener("click", clearTiles);
-  $("#checkTilesBtn").addEventListener("click", checkTiles);
-  document.addEventListener("keydown", onKeys);
-  setInterval(updateSyncBadge, 5000);
+  $("#teachBtn").addEventListener("click", teachBack);
+  $("#teachInput").addEventListener("keydown", (e) => { if (e.key === "Enter") teachBack(); });
+  cv.addEventListener("pointerdown", onTap);
 }
-
-async function refreshState() {
-  try { learnerState = await engine.getState(engine.domainId, concepts); } catch { learnerState = null; }
-  updateSyncBadge();
-}
-
-function renderTitle() {
-  const people = PEOPLE[engine.domainId] || PEOPLE["oregon-medical"];
-  $("#titleContext").innerHTML = `<strong>${esc(domain?.label.en || engine.domainId)}</strong> · English ↔ ${targetLang === "zh" ? "中文" : "Español"} · ${concepts.length} engine concepts · ${people.a[0]} is waiting in ${people.room.toLowerCase()}. ${engine.online ? "Progression engine connected." : "Engine offline — bundled knowledge + local memory; syncs later."}`;
-  const due = learnerState?.dueForReview || [];
-  const practiced = Object.values(learnerState?.stages || {}).flatMap((v) => Object.values(v)).filter((c) => c.evidenceCount > 0).length;
-  $("#dueBtn").hidden = due.length === 0;
-  $("#dueBtn").textContent = due.length ? `Review ${due.length} due concept${due.length > 1 ? "s" : ""} before they fade` : "Review due";
-  $("#titleStats").innerHTML = `
-    <span class="stat-chip">${learnerState?.evidenceCount || 0}<small>evidence events (all games)</small></span>
-    <span class="stat-chip">${practiced}<small>concept-stages practiced</small></span>
-    <span class="stat-chip">${due.length}<small>due for review now</small></span>
-    <span class="stat-chip">${engine.online ? "Connected" : "Local-only"}<small>${esc(engine.engineUrl)}</small></span>`;
-  const dueIds = new Set(due.map((d) => d.conceptId));
-  $("#masteryMap").innerHTML = concepts.map((c) => {
-    const vec = learnerState?.stages?.[c.conceptId];
-    const pips = [1, 2, 3, 4, 5, 6, 7, 8].map((s) => {
-      const cell = vec?.[s] || { estimate: 0, evidenceCount: 0 };
-      const cls = !cell.evidenceCount ? "" : cell.estimate >= 0.7 ? "strong" : "learning";
-      const dueCls = dueIds.has(c.conceptId) && cell.evidenceCount ? " due" : "";
-      return `<span class="pip ${cls}${dueCls}" title="Stage ${s}: ${cell.evidenceCount ? `${(cell.estimate * 100).toFixed(0)}% (n=${cell.evidenceCount}, retention ${((cell.retention ?? 1) * 100).toFixed(0)}%)` : "no evidence"}"></span>`;
-    }).join("");
-    return `<button type="button" class="map-row" data-clinch="${esc(c.conceptId)}"><span class="term">${esc(c.terms.en.term)} → ${esc(tgtTerm(c))}<small>${esc(c.areaIds.join(", "))} · difficulty ${c.difficulty}/5${dueIds.has(c.conceptId) ? " · DUE" : ""}</small></span><span class="pips">${pips}</span></button>`;
-  }).join("");
-  document.querySelectorAll("[data-clinch]").forEach((b) => b.addEventListener("click", () => startSession({ conceptId: b.dataset.clinch })));
-  renderVisitTrack(null);
-}
-
-function renderVisitTrack(currentConcept) {
-  const areas = domain?.translationAreas || [];
-  $("#visitTrack").innerHTML = areas.map((a) => {
-    const inArea = concepts.filter((c) => c.areaIds.includes(a.areaId));
-    const done = inArea.length && inArea.every((c) => {
-      const v = learnerState?.stages?.[c.conceptId];
-      return v && [1, 2, 3, 4].some((s) => v[s].evidenceCount > 0 && v[s].estimate >= 0.6);
-    });
-    const now = currentConcept && currentConcept.areaIds.includes(a.areaId);
-    return `<span class="visit-step ${done ? "done" : ""} ${now ? "now" : ""}">${done ? "✓ " : ""}${esc(a.label.en)}</span>`;
-  }).join("");
-}
-
-// ---------- session ----------
-async function startSession({ conceptId = null, dueOnly = false } = {}) {
-  await refreshState();
-  let queue = [];
-  if (conceptId) queue = [concepts.find((c) => c.conceptId === conceptId)].filter(Boolean);
-  else if (dueOnly) queue = (learnerState?.dueForReview || []).map((d) => concepts.find((c) => c.conceptId === d.conceptId)).filter(Boolean);
-  if (!queue.length) {
-    const next = await engine.getNext(engine.domainId).catch(() => null);
-    const first = concepts.find((c) => c.conceptId === next?.conceptId) || concepts[0];
-    queue = [first, ...shuffle(concepts.filter((c) => c.conceptId !== first.conceptId)).slice(0, 2)];
-  }
-  session = { queue: queue.slice(0, 3), qi: 0, beatIndex: 0, assisted: false, built: [], sessionCorrect: 0, sessionTotal: 0, conceptsDone: [] };
-  const people = PEOPLE[engine.domainId] || PEOPLE["oregon-medical"];
-  $("#nameA").textContent = people.a[0]; $("#roleA").textContent = people.a[1];
-  $("#sceneRoom").textContent = people.room;
-  showScreen("screen-play");
-  renderBeat();
-}
-
-function currentConcept() { return session.queue[session.qi]; }
-
-function renderBeat() {
-  const concept = currentConcept();
-  const beat = BEATS[session.beatIndex];
-  const area = domain?.translationAreas.find((a) => a.areaId === concept.areaIds[0]);
-  $("#hudPlace").textContent = (PEOPLE[engine.domainId] || PEOPLE["oregon-medical"]).room;
-  $("#hudConcept").textContent = `${concept.terms.en.term} → ${tgtTerm(concept)}`;
-  $("#hudBeat").textContent = `${beat.name} · ${session.qi + 1}/${session.queue.length} concepts`;
-  const dueIds = new Set((learnerState?.dueForReview || []).map((d) => d.conceptId));
-  const dueEl = $("#hudDue");
-  dueEl.hidden = !dueIds.has(concept.conceptId);
-  dueEl.textContent = "Due review — retention fading";
-  updateStreakHud();
-  renderVisitTrack(concept);
-  $("#beatCaption").textContent = beat.caption;
-  $("#sourceLine").textContent = `Source: ${(concept.sourceIds || []).join(", ") || "—"} · Area: ${area?.label.en || concept.areaIds[0]} (${area?.riskIfMistranslated || "?"} risk) · Stage ${beat.stage} evidence stays separate from the other seven stages.`;
-  $("#feedback").textContent = ""; $("#feedback").className = "feedback";
-  $("#consequence").hidden = true;
-  $("#nextStepBtn").hidden = true;
-  $("#hintBtn").disabled = false;
-  $("#choices").innerHTML = ""; $("#tilesWrap").hidden = true;
-  session.assisted = false; session.built = [];
-  stopTimer();
-
-  const ex = exampleFor(concept);
-  if (beat.key === "hear") {
-    $("#bubbleText").textContent = `“${ex.en}”`;
-    $("#promptText").textContent = `You hear “${concept.terms.en.term}”. What is actually being referred to?`;
-    const item = core.generateItem({ concept, domain, area, stage: 1, targetLang, seed: `clinch-${concept.conceptId}` });
-    const options = shuffle(item.choices?.length ? item.choices : [concept.definition.en]);
-    renderChoices(options, concept.definition.en, () => "That is the concept — now produce it, don't just recognize it.");
-    startPressure(14);
-  } else if (beat.key === "build") {
-    const target = ex[targetLang] || ex.es;
-    $("#bubbleText").textContent = `“${ex.en}”`;
-    $("#promptText").textContent = `Build the ${targetLang === "zh" ? "中文" : "Spanish"} rendering. Every tile is a decision — order is meaning.`;
-    session.targetTokens = tokenize(target, targetLang);
-    const others = shuffle(concepts.filter((c) => c.conceptId !== concept.conceptId)).slice(0, 2).map((c) => tgtTerm(c));
-    session.bank = shuffle([...session.targetTokens, ...others]);
-    renderTiles();
-  } else if (beat.key === "catch") {
-    const faithful = ex[targetLang] || ex.es;
-    const wrongTerm = shuffle(concepts.filter((c) => c.conceptId !== concept.conceptId).map((c) => tgtTerm(c)))[0] || "—";
-    const distorted = faithful.replace(tgtTerm(concept), wrongTerm);
-    const options = shuffle([faithful, distorted === faithful ? `${faithful} (sin cambios importantes)` : distorted]);
-    session.faithfulText = faithful;
-    $("#bubbleText").textContent = `“${ex.en}”`;
-    $("#promptText").textContent = `Two interpreters rendered that turn. One preserves “${concept.terms.en.term}”. Which one would you trust on the record?`;
-    renderChoices(options, faithful, () => "Correct — the other rendering swaps the very distinction this encounter turns on.");
-    startPressure(18);
+async function startSession({ dueOnly = false } = {}) {
+  let queue = shuffle(concepts);
+  if (dueOnly) {
+    const state = await engine.getState(engine.domainId, concepts).catch(() => null);
+    const dueIds = new Set((state?.dueForReview || []).map((d) => d.conceptId));
+    queue = concepts.filter((c) => dueIds.has(c.conceptId));
+    if (!queue.length) queue = shuffle(concepts);
   } else {
-    // teach-back: half the sessions get a subtly wrong paraphrase
-    const wrong = Math.random() < 0.5;
-    const contrastTerm = concept.distinctions?.[0]?.contrast || "a similar term";
-    const text = wrong
-      ? (targetLang === "zh" ? `我明白了，就是${contrastTerm}的意思，对吧？` : `Ya entiendo — es lo mismo que ${contrastTerm}, ¿verdad?`)
-      : (ex[targetLang] || ex.es);
-    session.teachbackWrong = wrong;
-    $("#bubbleText").textContent = `“${text}”`;
-    $("#promptText").textContent = `${(PEOPLE[engine.domainId] || PEOPLE["oregon-medical"]).bubbleName} teaches it back to you. Is their understanding faithful?`;
-    renderChoices(["Faithful — they have it", "Distorted — a key distinction slipped"], wrong ? "Distorted — a key distinction slipped" : "Faithful — they have it", () => wrong ? "Right to catch it. Left alone, that misunderstanding walks out the door with them." : "Correct — faithful paraphrase in different words still counts. Interpreting preserves meaning, not wording.");
+    try { const nx = await engine.getNext(engine.domainId); const first = concepts.find((c) => c.conceptId === nx?.conceptId); if (first) queue = [first, ...queue.filter((c) => c.conceptId !== first.conceptId)]; } catch {}
+  }
+  S = { queue: queue.slice(0, 5), qi: 0, beat: 0, built: [], tiles: [], orbs: [], bubbles: [], correctBeats: 0, totalBeats: 0, t: 0, clientMood: 0, newObject: null };
+  show("screen-play"); loadBeat(); loop();
+}
+function concept() { return S.queue[S.qi]; }
+function hud() {
+  const c = concept();
+  $("#hudPlace").textContent = domain?.label.en || engine.domainId;
+  $("#hudConcept").textContent = c ? `${c.terms.en.term}` : "";
+  $("#hudBeat").textContent = c ? `Visit ${S.qi + 1}/${S.queue.length} · ${BEATS[S.beat].name}` : "";
+  $("#hudTrust").textContent = `Trust ${studio.trust} · Shelf ${studio.built.length}`;
+}
+function loadBeat() {
+  const c = concept(); const beat = BEATS[S.beat];
+  S.built = []; S.tiles = []; S.orbs = []; S.bubbles = []; S.clientMood = 0;
+  $("#teachRow").hidden = beat.key !== "teachback";
+  $("#feedback").textContent = ""; $("#feedback").className = "feedback";
+  if (beat.key === "hear") {
+    speak(c.terms.en.term, "en");
+    const wrong = shuffle(concepts.filter((x) => x.conceptId !== c.conceptId)).slice(0, 2);
+    S.orbs = shuffle([c, ...wrong]).map((x, i) => ({ x: 250 + i * 230, y: 300, r: 62, concept: x, label: x.definition.en }));
+    $("#feedback").textContent = `You heard “${c.terms.en.term}”. Which orb means it?`;
+  } else if (beat.key === "build") {
+    const sentence = tgtTerm(c);
+    const words = tokenize(sentence);
+    const extras = shuffle(concepts.filter((x) => x.conceptId !== c.conceptId)).slice(0, 2).map((x) => tokenize(tgtTerm(x))[0]).filter(Boolean);
+    S.answer = words;
+    S.tiles = shuffle([...words.map((w) => ({ w, used: false })), ...extras.map((w) => ({ w, extra: true, used: false }))]);
+    $("#feedback").textContent = `Build “${c.terms.en.term}” in ${targetLang === "zh" ? "中文" : "Español"} — tap tiles in order.`;
+    speak(c.terms.en.term, "en");
+  } else if (beat.key === "catch") {
+    const ex = exampleFor(c);
+    const wrongC = shuffle(concepts.filter((x) => x.conceptId !== c.conceptId))[0];
+    const faithful = ex[targetLang] || ex.es;
+    const distorted = faithful.includes(tgtTerm(c)) ? faithful.replace(tgtTerm(c), tgtTerm(wrongC)) : `${faithful} (más o menos)`;
+    S.bubbles = shuffle([{ text: faithful, good: true }, { text: distorted, good: false }]);
+    $("#feedback").textContent = `Two renderings of “${ex.en}” — one quietly betrays it. Tap the faithful one.`;
+    speak(ex.en, "en");
+  } else {
+    $("#feedback").textContent = `Teach-back: explain “${c.terms.en.term}” below like a client is listening.`;
+    $("#teachInput").value = ""; setTimeout(() => $("#teachInput").focus(), 60);
+  }
+  hud();
+}
+function finishBeat(ok, why) {
+  const c = concept(); const beat = BEATS[S.beat];
+  S.totalBeats++; if (ok) S.correctBeats++;
+  S.clientMood = ok ? 1 : -1;
+  const fb = $("#feedback"); fb.className = `feedback ${ok ? "good" : "bad"}`; fb.textContent = why;
+  engine.recordEvidence({ conceptId: c.conceptId, areaId: c.areaIds[0], gameId: "concept-clinch", activityType: beat.key === "build" ? "bilingual" : beat.key === "hear" ? "terminology" : beat.key === "catch" ? "conceptual" : "conceptual", stage: beat.stage, languageDirection: beat.key === "build" ? `en->${targetLang}` : "en", correct: ok, score: ok ? 1 : 0.25, responseSummary: `Atelier ${beat.key} on ${c.conceptId}` });
+  if (ok) { studio.trust += 2; Juice.good(); } else Juice.bad();
+  syncBadge();
+  setTimeout(() => {
+    if (!S) return;
+    S.beat++;
+    if (S.beat >= BEATS.length) {
+      // visit mastered if at least 3 of 4 beats held
+      if (S.correctBeats >= 3 && !studio.built.includes(c.conceptId)) {
+        studio.built.push(c.conceptId); saveStudio();
+        S.newObject = OBJECTS[(studio.built.length - 1) % OBJECTS.length];
+        juice.confetti(480, 180);
+        $("#feedback").textContent = `Visit carried. A ${S.newObject} joins your shelf — “${c.terms.en.term}” lives here now.`;
+        $("#feedback").className = "feedback good";
+        hud();
+        setTimeout(nextVisit, 1400); return;
+      }
+      nextVisit(); return;
+    }
+    loadBeat();
+  }, 1250);
+}
+function nextVisit() { S.qi++; S.beat = 0; S.correctBeats = 0; if (S.qi >= S.queue.length) { endSession(); return; } loadBeat(); }
+function teachBack() {
+  const c = concept();
+  const got = $("#teachInput").value.trim();
+  if (!got) { $("#feedback").textContent = "Teach it — silence teaches nothing."; return; }
+  const key = [c.terms.en.term.toLowerCase(), ...(c.definition.en.toLowerCase().split(/\W+/).filter((w) => w.length > 5).slice(0, 4))];
+  const hits = key.filter((k) => got.toLowerCase().includes(k)).length;
+  const ok = got.split(/\s+/).length >= 6 && hits >= 1;
+  finishBeat(ok, ok ? "Taught like you own it — because now you do." : `Too thin. It means: ${c.definition.en}`);
+}
+function onTap(e) {
+  if (!S) return;
+  const beat = BEATS[S.beat];
+  const r = cv.getBoundingClientRect();
+  const x = (e.clientX - r.left) * (W / r.width), y = (e.clientY - r.top) * (H / r.height);
+  if (beat.key === "hear") {
+    const orb = S.orbs.find((o) => Math.hypot(o.x - x, o.y - y) < o.r + 8);
+    if (!orb) return;
+    const ok = orb.concept.conceptId === concept().conceptId;
+    if (ok) juice.burst(orb.x, orb.y, "#177a6c", 18);
+    finishBeat(ok, ok ? `Heard true — “${concept().terms.en.term}” means exactly that.` : `That orb is “${orb.concept.terms.en.term}”. Ears first; the term was “${concept().terms.en.term}”.`);
+  } else if (beat.key === "build") {
+    const i = S.tiles.findIndex((t, ti) => !t.used && Math.abs(tilePos(ti).x + 54 - x) < 62 && Math.abs(tilePos(ti).y + 20 - y) < 28);
+    if (i < 0) return;
+    const tile = S.tiles[i];
+    const expected = S.answer[S.built.length];
+    if (tile.extra || tile.w !== expected) {
+      Juice.bad(); juice.shake(5);
+      finishBeat(false, `“${tile.w}” doesn't belong there — the sentence is “${S.answer.join(" ")}”.`);
+      return;
+    }
+    tile.used = true; S.built.push(tile.w); Juice.pop(); juice.burst(x, y, "#e9a13b", 8);
+    if (S.built.length >= S.answer.length) finishBeat(true, `Built: “${S.answer.join(" ")}”. Your hands know it now.`);
+    else hud();
+  } else if (beat.key === "catch") {
+    const i = S.bubbles.findIndex((b, bi) => { const r2 = bubbleRect(bi); return x >= r2.x && x <= r2.x + r2.w && y >= r2.y && y <= r2.y + r2.h; });
+    if (i < 0) return;
+    const b = S.bubbles[i];
+    finishBeat(b.good, b.good ? "Faithful. The distinction survived you." : `That one swaps the load-bearing word — betrayal in a friendly voice. Faithful: “${S.bubbles.find((z) => z.good).text}”`);
   }
 }
-
-function renderChoices(options, answer, successText) {
-  session.answer = answer; session.successText = successText;
-  $("#choices").innerHTML = options.map((o, i) => `<button type="button" class="choice" data-choice="${esc(o)}"><span class="key">${i + 1}</span><span>${esc(o)}</span></button>`).join("");
-  document.querySelectorAll(".choice").forEach((b) => b.addEventListener("click", () => answerChoice(b)));
-}
-
-function renderTiles() {
-  const builtEl = $("#sentenceBuilt"), bankEl = $("#tileBank");
-  $("#tilesWrap").hidden = false;
-  builtEl.innerHTML = session.built.map((t, i) => `<button type="button" class="tile in-built" data-built="${i}">${esc(t)}</button>`).join("");
-  const remaining = [...session.bank];
-  for (const t of session.built) { const k = remaining.indexOf(t); if (k >= 0) remaining.splice(k, 1); }
-  bankEl.innerHTML = remaining.map((t) => `<button type="button" class="tile" data-tile="${esc(t)}">${esc(t)}</button>`).join("");
-  bankEl.querySelectorAll("[data-tile]").forEach((b) => b.addEventListener("click", () => { session.built.push(b.dataset.tile); sfxTile(); renderTiles(); }));
-  builtEl.querySelectorAll("[data-built]").forEach((b) => b.addEventListener("click", () => { session.built.splice(Number(b.dataset.built), 1); renderTiles(); }));
-  $("#checkTilesBtn").disabled = false;
-}
-function clearTiles() { session.built = []; renderTiles(); }
-
-function startPressure(seconds) {
-  if (!$("#pressureToggle").checked) { $("#timerRing").hidden = true; return; }
-  timeLeft = seconds; stopTimer();
-  $("#timerRing").hidden = false;
-  const circumference = 119;
-  const tick = () => {
-    $("#timerText").textContent = Math.ceil(timeLeft);
-    $("#ringFg").style.strokeDashoffset = String(circumference * (1 - Math.max(0, timeLeft) / seconds));
-    timeLeft -= 0.1;
-    if (timeLeft < 0) { stopTimer(); timeExpired(); }
-  };
-  tick(); timerId = setInterval(tick, 100);
-}
-function stopTimer() { if (timerId) clearInterval(timerId); timerId = null; const r = $("#timerRing"); if (r) r.hidden = true; }
-function timeExpired() {
-  const beat = BEATS[session.beatIndex];
-  if (beat.key === "build") { checkTiles(true); return; }
-  document.querySelectorAll(".choice").forEach((b) => { b.disabled = true; if (b.dataset.choice === session.answer) b.classList.add("is-correct"); });
-  finishBeat(false, "Time — retrieval under pressure is its own stage (6). The engine notes this separately from knowledge; slow-and-right still counts in untimed mode.");
-}
-
-function useHint() {
-  if (!session) return;
-  session.assisted = true;
-  const c = currentConcept();
-  const fb = $("#feedback");
-  fb.className = "feedback";
-  fb.textContent = `Notebook: ${c.definition.en} In the other language: “${tgtTerm(c)}”${c.distinctions?.[0] ? ` — vs. ${c.distinctions[0].contrast}: ${c.distinctions[0].difference}` : ""} (hint logged; assisted proof still counts, differently)`;
-  $("#hintBtn").disabled = true;
-  tone(330, 0.08, "sine", 0.03);
-}
-
-function answerChoice(btn) {
-  stopTimer();
-  document.querySelectorAll(".choice").forEach((b) => { b.disabled = true; });
-  const correct = btn.dataset.choice === session.answer;
-  btn.classList.add(correct ? "is-correct" : "is-wrong", "pop");
-  if (!correct) document.querySelectorAll(".choice").forEach((b) => { if (b.dataset.choice === session.answer) b.classList.add("is-correct"); });
-  finishBeat(correct, correct ? session.successText : explainMiss());
-}
-function checkTiles(expired = false) {
-  stopTimer();
-  const concept = currentConcept();
-  const built = session.built.join(targetLang === "zh" ? "" : " ").replace(/\s+/g, " ").trim().toLowerCase();
-  const target = session.targetTokens.join(targetLang === "zh" ? "" : " ").replace(/\s+/g, " ").trim().toLowerCase();
-  const correct = built === target;
-  $("#checkTilesBtn").disabled = true;
-  finishBeat(correct, correct
-    ? `Built, not picked. “${session.targetTokens.join(targetLang === "zh" ? "" : " ")}” — that production is stage-2 evidence recognition can never give.`
-    : `${expired ? "Time. " : ""}Not yet — listen to the order: “${session.targetTokens.join(targetLang === "zh" ? "" : " ")}”. ${concept.distinctions?.[0]?.difference || concept.definition.en}`);
-}
-
-function explainMiss() {
-  const c = currentConcept();
-  const beat = BEATS[session.beatIndex];
-  if (beat.key === "hear") return `That is a neighbor, not this concept. ${c.distinctions?.[0]?.difference || c.definition.en}`;
-  if (beat.key === "catch") return `The other rendering is faithful. Swapping “${tgtTerm(c)}” changes what the clinician, patient, or court acts on — in a ${c.areaIds[0]} encounter that is consequential, not stylistic.`;
-  return c.distinctions?.[0] ? `Listen for the distinction: ${c.distinctions[0].difference}` : `Compare carefully: ${c.definition.en}`;
-}
-
-// ---------- Voice Atelier studio (Build pillar; trust never buys correctness) ----------
-const CATALOG = [
-  { id: "fern", name: "Listening Fern", icon: "F", cost: 30, blurb: "Notebook hints add the spoken example." },
-  { id: "lamp", name: "Consent Lamp", icon: "L", cost: 50, blurb: "Teach-back moments glow — slower, kinder light." },
-  { id: "abacus", name: "Abacus of Numbers", icon: "123", cost: 40, blurb: "Numbers in the room get a bead of emphasis." },
-  { id: "desk", name: "Note Desk", icon: "N", cost: 45, blurb: "A proper place for Rozan symbols and jots." },
-  { id: "sofa", name: "Waiting Sofa", icon: "S", cost: 60, blurb: "Tomorrow's people wait comfortably — and return." },
-  { id: "mural", name: "Mural of Two Rivers", icon: "R", cost: 90, blurb: "Two languages, one wall. Pure pride." },
-];
-let studio = { trust: 0, built: {}, duos: [] };
-function studioKey() { return `ev:atelier:${engine?.learnerId || "anon"}`; }
-function loadStudio() {
-  try { studio = { trust: 0, built: {}, duos: [], ...JSON.parse(localStorage.getItem(studioKey()) || "{}") }; } catch { studio = { trust: 0, built: {}, duos: [] }; }
-}
-function saveStudio() { localStorage.setItem(studioKey(), JSON.stringify(studio)); }
-function renderStudio() {
-  const pill = $("#trustPill"); if (!pill) return;
-  pill.textContent = `Trust ${studio.trust}`;
-  const grid = $("#studioGrid");
-  grid.innerHTML = Array.from({ length: 6 }, (_, i) => {
-    const builtId = studio.built[i];
-    const piece = CATALOG.find((c) => c.id === builtId);
-    return piece
-      ? `<button type="button" class="plot built" data-plot="${i}"><span><span class="plot-icon">${esc(piece.icon)}</span>${esc(piece.name)}<small>Built · tap for another</small></span></button>`
-      : `<button type="button" class="plot" data-plot="${i}"><span><span class="plot-icon">+</span>Empty plot<small>Tap to build</small></span></button>`;
-  }).join("");
-  grid.querySelectorAll("[data-plot]").forEach((b) => b.addEventListener("click", () => openBuildMenu(Number(b.dataset.plot))));
-  const wall = $("#duoWall");
-  wall.innerHTML = studio.duos.length
-    ? studio.duos.map((d) => `<span class="duo-card">${esc(d.a)} ⚔ ${esc(d.b)}<small>reconciled in the room</small></span>`).join("")
-    : `<span class="hint">Catch a distortion to reconcile your first duo.</span>`;
-}
-function openBuildMenu(plot) {
-  const menu = $("#buildMenu");
-  menu.hidden = false;
-  menu.innerHTML = `<strong>Build on plot ${plot + 1} — Trust ${studio.trust}</strong>` + CATALOG.map((c) => {
-    const owned = Object.values(studio.built).includes(c.id);
-    return `<button type="button" class="build-option" data-build="${c.id}" ${owned || studio.trust < c.cost ? "disabled" : ""}><span>${esc(c.name)}<small>${esc(c.blurb)}</small></span><span>${owned ? "Built" : `${c.cost} Trust`}</span></button>`;
-  }).join("");
-  menu.querySelectorAll("[data-build]").forEach((b) => b.addEventListener("click", () => {
-    const piece = CATALOG.find((c) => c.id === b.dataset.build);
-    studio.trust -= piece.cost; studio.built[plot] = piece.id; saveStudio(); renderStudio();
-    menu.innerHTML = `<strong>${esc(piece.name)} raised.</strong> <span class="hint">The room feels more like yours. Correctness still has to be earned in the encounters.</span>`;
-    sfxGood(); burst(true);
-  }));
-}
-function earnTrust(correct, beatKey) {
-  if (!correct) return 0;
-  const gain = beatKey === "build" ? 14 : beatKey === "catch" ? 12 : 10;
-  studio.trust += gain; saveStudio();
-  return gain;
-}
-
-function finishBeat(correct, explanation) {
-  const beat = BEATS[session.beatIndex];
-  const concept = currentConcept();
-  session.sessionTotal += 1;
-  if (correct) session.sessionCorrect += 1;
-  const fb = $("#feedback");
-  fb.className = `feedback ${correct ? "good" : "bad"}`;
-  fb.textContent = correct ? "Held. " + explanation : "Wobbled. " + explanation;
-  const cons = $("#consequence");
-  cons.hidden = false;
-  cons.innerHTML = correct
-    ? `<strong>In the room:</strong> ${(PEOPLE[engine.domainId] || PEOPLE["oregon-medical"]).bubbleName} nods — the meaning landed. The chart gains a line, and this proof is yours.`
-    : `<strong>In the room:</strong> a pause, a furrowed brow. No one is harmed in practice — this is exactly where misunderstanding is cheapest to fix. The engine queues a revisit.`;
-  const gained = earnTrust(correct, beat.key);
-  if (correct && beat.key === "catch" && concept.distinctions?.[0]) {
-    const duo = { a: concept.terms.en.term, b: concept.distinctions[0].contrast };
-    if (!studio.duos.some((d) => d.a === duo.a)) { studio.duos.push(duo); saveStudio(); }
+function tilePos(i) { const per = 5, col = i % per, row = Math.floor(i / per); return { x: 180 + col * 128, y: 408 + row * 52 }; }
+function bubbleRect(i) { return { x: 90 + i * 420, y: 300, w: 370, h: 104 }; }
+function loop() { if (!S) return; S.t++; draw(); juice.update(); if ($("#screen-play").classList.contains("is-active")) raf = requestAnimationFrame(loop); }
+function draw() {
+  const { x: sx, y: sy } = juice.shakeOffset();
+  ctx.save(); ctx.translate(sx, sy);
+  const c = concept(); const beat = BEATS[S.beat];
+  // studio room
+  ctx.fillStyle = "#f4ead8"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#e7d6b8"; ctx.fillRect(0, 360, W, 180);
+  ctx.fillStyle = "#22312c"; ctx.fillRect(0, 118, W, 8);
+  // window light
+  ctx.fillStyle = "#dcebe6"; ctx.fillRect(36, 28, 150, 96); ctx.strokeStyle = "#22312c"; ctx.strokeRect(36, 28, 150, 96);
+  ctx.fillStyle = "#fdf3c8"; ctx.beginPath(); ctx.arc(140, 62, 18, 0, 7); ctx.fill();
+  // shelf with built objects
+  ctx.fillStyle = "#8a5a2e"; ctx.fillRect(560, 196, 370, 12); ctx.fillRect(560, 286, 370, 12);
+  ctx.font = "800 12px 'Public Sans', sans-serif"; ctx.fillStyle = "#6b5d4f"; ctx.textAlign = "left";
+  ctx.fillText("YOUR SHELF — BUILT, NOT BOUGHT", 560, 188);
+  studio.built.slice(-10).forEach((id, i) => { drawObject(OBJECTS[i % OBJECTS.length], 592 + (i % 5) * 72, i < 5 ? 196 : 286, i === studio.built.length - 1 && S.newObject); });
+  if (!studio.built.length) { ctx.font = "600 13px 'Public Sans', sans-serif"; ctx.fillStyle = "#9a8a72"; ctx.fillText("Empty shelves. First visit fills one.", 560, 240); }
+  // client (left) + you (right of desk)
+  person(150, 330, "#7a4a56", c ? "Client" : "", S.clientMood);
+  person(452, 330, "#177a6c", "You", 0);
+  // desk
+  ctx.fillStyle = "#5f3d1c"; ctx.fillRect(96, 356, 420, 18);
+  // speech bubble: current term
+  if (c) {
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.roundRect(66, 236, 250, 62, 12); ctx.fill(); ctx.strokeStyle = "#22312c"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = "#22312c"; ctx.font = "700 17px 'Public Sans', sans-serif"; ctx.textAlign = "center";
+    ctx.fillText(`“${c.terms.en.term}”`, 191, 264, 230);
+    ctx.font = "600 12px 'Public Sans', sans-serif"; ctx.fillStyle = "#6b5d4f";
+    ctx.fillText(beat.name.toUpperCase(), 191, 284);
   }
-  correct ? (sfxGood(), burst(true)) : (sfxBad(), burst(false));
-  if (gained) fb.textContent += ` +${gained} Trust for the studio.`;
-  react(correct);
-  updateStreakHud(correct);
-  engine.recordEvidence({
-    conceptId: concept.conceptId, areaId: concept.areaIds[0], gameId: "concept-clinch",
-    activityType: beat.key === "build" ? "bilingual" : beat.key === "catch" ? "conceptual" : beat.key === "teachback" ? "conceptual" : "terminology",
-    stage: beat.stage, languageDirection: beat.key === "build" ? `en->${targetLang}` : "en",
-    correct, score: correct ? (session.assisted ? 0.7 : 1) : 0.15,
-    assistance: session.assisted ? ["notebook-hint"] : [],
-    ...(!correct && concept.misconceptions?.[0]?.tag ? { misconceptionTag: concept.misconceptions[0].tag } : {}),
-    responseSummary: `${beat.name} on ${concept.conceptId}`,
-  });
-  updateSyncBadge();
-  $("#nextStepBtn").hidden = false; $("#nextStepBtn").focus();
-}
-
-function updateStreakHud(correct) {
-  // streak derives from recent local evidence honesty: show session accuracy flame text (no emoji per house style)
-  const acc = session && session.sessionTotal ? Math.round((session.sessionCorrect / session.sessionTotal) * 100) : 100;
-  $("#hudStreak").textContent = session ? `Session ${session.sessionCorrect}/${session.sessionTotal} · ${acc}%` : "";
-}
-
-function advance() {
-  session.beatIndex += 1;
-  if (session.beatIndex >= BEATS.length) {
-    session.conceptsDone.push(currentConcept().conceptId);
-    session.qi += 1; session.beatIndex = 0;
-    if (session.qi >= session.queue.length) { endSession(); return; }
+  // beat stage
+  if (c && beat.key === "hear") {
+    for (const o of S.orbs) {
+      ctx.fillStyle = "rgba(23,122,108,.14)"; ctx.beginPath(); ctx.arc(o.x, o.y, o.r + 10 + Math.sin(S.t * 0.05 + o.x) * 3, 0, 7); ctx.fill();
+      ctx.fillStyle = "#fffdf6"; ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, 7); ctx.fill(); ctx.strokeStyle = "#22312c"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#22312c"; ctx.font = "600 12px 'Public Sans', sans-serif"; ctx.textAlign = "center";
+      wrap(o.label, o.x - o.r + 10, o.y - 14, o.r * 2 - 20, 15, true);
+    }
+  } else if (c && beat.key === "build") {
+    // sentence strip
+    ctx.fillStyle = "#22312c"; ctx.beginPath(); ctx.roundRect(120, 322 - 66, 720, 46, 9); ctx.fill();
+    ctx.fillStyle = "#f4ead8"; ctx.font = "700 16px 'Public Sans', sans-serif"; ctx.textAlign = "left";
+    ctx.fillText(S.built.join(" ") || "…", 136, 322 - 38, 690);
+    S.tiles.forEach((t, i) => {
+      if (t.used) return;
+      const p = tilePos(i);
+      ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.beginPath(); ctx.roundRect(p.x + 4, p.y + 5, 108, 40, 8); ctx.fill();
+      ctx.fillStyle = t.extra ? "#d8cfc0" : "#fdf6e3"; ctx.beginPath(); ctx.roundRect(p.x, p.y, 108, 40, 8); ctx.fill();
+      ctx.strokeStyle = "#22312c"; ctx.lineWidth = 1.6; ctx.stroke();
+      ctx.fillStyle = "#22312c"; ctx.font = "700 14px 'Public Sans', sans-serif"; ctx.textAlign = "center";
+      ctx.fillText(t.w.length > 15 ? t.w.slice(0, 14) + "…" : t.w, p.x + 54, p.y + 25, 100);
+    });
+  } else if (c && beat.key === "catch") {
+    S.bubbles.forEach((b, i) => {
+      const r = bubbleRect(i);
+      ctx.fillStyle = "rgba(0,0,0,.16)"; ctx.beginPath(); ctx.roundRect(r.x + 5, r.y + 7, r.w, r.h, 13); ctx.fill();
+      ctx.fillStyle = "#fffdf6"; ctx.beginPath(); ctx.roundRect(r.x, r.y, r.w, r.h, 13); ctx.fill(); ctx.strokeStyle = "#22312c"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#22312c"; ctx.font = "600 14px 'Public Sans', sans-serif"; ctx.textAlign = "left";
+      wrap(b.text, r.x + 14, r.y + 27, r.w - 28, 18);
+    });
+  } else if (c) {
+    ctx.fillStyle = "#22312c"; ctx.font = "600 15px 'Public Sans', sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("Your words, below. The client is listening.", 330, 322);
   }
-  renderBeat();
+  juice.draw();
+  ctx.restore();
 }
-
+function person(x, y, robe, label, mood) {
+  ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.beginPath(); ctx.ellipse(x, y + 44, 30, 7, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = robe; ctx.beginPath(); ctx.moveTo(x - 24, y + 42); ctx.quadraticCurveTo(x, y - 6, x + 24, y + 42); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#f2c29b"; ctx.beginPath(); ctx.arc(x, y - 18, 14, 0, 7); ctx.fill();
+  ctx.fillStyle = "#1c1410"; ctx.beginPath(); ctx.arc(x - 5, y - 20, 2, 0, 7); ctx.arc(x + 5, y - 20, 2, 0, 7); ctx.fill();
+  ctx.strokeStyle = "#1c1410"; ctx.lineWidth = 2; ctx.beginPath();
+  if (mood > 0) ctx.arc(x, y - 10, 6, 0.15 * Math.PI, 0.85 * Math.PI); else if (mood < 0) ctx.arc(x, y - 2, 6, 1.15 * Math.PI, 1.85 * Math.PI); else { ctx.moveTo(x - 5, y - 11); ctx.lineTo(x + 5, y - 11); }
+  ctx.stroke();
+  ctx.font = "700 11px 'Public Sans', sans-serif"; ctx.textAlign = "center"; ctx.fillStyle = "#6b5d4f";
+  ctx.fillText(label.toUpperCase(), x, y + 60);
+}
+function drawObject(kind, x, baseY, fresh) {
+  const y = baseY - 6; ctx.save(); ctx.translate(x, y);
+  if (fresh) { ctx.fillStyle = "rgba(233,161,59,.3)"; ctx.beginPath(); ctx.arc(0, -18, 27, 0, 7); ctx.fill(); }
+  ctx.fillStyle = "#22312c";
+  if (kind === "lamp") { ctx.fillRect(-2, -34, 4, 26); ctx.fillStyle = "#e9a13b"; ctx.beginPath(); ctx.moveTo(-13, -34); ctx.lineTo(13, -34); ctx.lineTo(8, -50); ctx.lineTo(-8, -50); ctx.closePath(); ctx.fill(); }
+  else if (kind === "plant") { ctx.fillStyle = "#a63a2e"; ctx.fillRect(-10, -14, 20, 14); ctx.strokeStyle = "#177a6c"; ctx.lineWidth = 3; for (const a of [-0.6, 0, 0.6]) { ctx.beginPath(); ctx.moveTo(0, -14); ctx.quadraticCurveTo(a * 18, -30, a * 24, -40); ctx.stroke(); } }
+  else if (kind === "books") { ctx.fillStyle = "#32506b"; ctx.fillRect(-14, -30, 8, 30); ctx.fillStyle = "#7a2230"; ctx.fillRect(-5, -26, 8, 26); ctx.fillStyle = "#177a6c"; ctx.fillRect(4, -32, 8, 32); }
+  else if (kind === "chair") { ctx.strokeStyle = "#5f3d1c"; ctx.lineWidth = 4; ctx.strokeRect(-13, -38, 26, 24); ctx.beginPath(); ctx.moveTo(-13, -14); ctx.lineTo(-13, 0); ctx.moveTo(13, -14); ctx.lineTo(13, 0); ctx.stroke(); }
+  else if (kind === "clock") { ctx.fillStyle = "#fffdf6"; ctx.beginPath(); ctx.arc(0, -24, 15, 0, 7); ctx.fill(); ctx.strokeStyle = "#22312c"; ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, -24); ctx.lineTo(0, -34); ctx.moveTo(0, -24); ctx.lineTo(7, -20); ctx.stroke(); }
+  else if (kind === "cat") { ctx.fillStyle = "#39444a"; ctx.beginPath(); ctx.ellipse(0, -8, 14, 9, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(10, -18, 8, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(4, -24); ctx.lineTo(6, -31); ctx.lineTo(10, -25); ctx.closePath(); ctx.fill(); }
+  else { ctx.fillStyle = "#7a6a9a"; ctx.beginPath(); ctx.moveTo(-10, 0); ctx.quadraticCurveTo(-14, -26, 0, -30); ctx.quadraticCurveTo(14, -26, 10, 0); ctx.closePath(); ctx.fill(); }
+  ctx.restore();
+}
+function wrap(text, x, y, maxW, lh, center = false) { const words = String(text).split(/\s+/); let line = "", yy = y; for (const w of words) { const test = line ? line + " " + w : w; if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, center ? x + maxW / 2 : x, yy); yy += lh; line = w; } else line = test; } if (line) ctx.fillText(line, center ? x + maxW / 2 : x, yy); }
 async function endSession() {
-  stopTimer();
+  if (raf) cancelAnimationFrame(raf); raf = null;
   await engine.sync().catch(() => {});
-  await refreshState();
   const next = await engine.getNext(engine.domainId).catch(() => null);
-  const due = learnerState?.dueForReview || [];
-  const doneAreas = (domain?.translationAreas || []).filter((a) => concepts.filter((c) => c.areaIds.includes(a.areaId)).some((c) => {
-    const v = learnerState?.stages?.[c.conceptId];
-    return v && [1, 2, 3, 4].some((s) => v[s].evidenceCount > 0 && v[s].estimate >= 0.6);
-  }));
-  const pct = session && session.sessionTotal ? Math.round((session.sessionCorrect / session.sessionTotal) * 100) : 0;
-  $("#endTitle").textContent = pct >= 80 ? "They understood you. That is the whole job." : pct >= 50 ? "Solid shift — the wobbles are mapped now." : "Every wobble is now on the engine's map. That is progress.";
-  $("#endStats").innerHTML = `<p style="font-size:19px;">This session: <strong>${session?.sessionCorrect || 0}/${session?.sessionTotal || 0} proofs (${pct}%)</strong> across ${(session?.conceptsDone || []).length} concept(s). Total engine evidence (this learner, this domain): <strong>${learnerState?.evidenceCount || 0}</strong>.</p>`;
-  $("#endExplain").innerHTML = next?.conceptId
-    ? `<strong>Engine next:</strong> ${esc(next.rationale)}<br><span class="hint">Suggested: ${esc(next.suggestedGameId || "concept-clinch")} · stage ${next.stage}${next.needsDiagnostic ? " · diagnostic first (competing causes)" : ""}</span>`
-    : `<strong>Engine next:</strong> more evidence will sharpen the recommendation.`;
-  $("#returnBox").innerHTML = `
-    <p><strong>Due queue:</strong> ${due.length ? due.map((d) => `${esc(concepts.find((c) => c.conceptId === d.conceptId)?.terms.en.term || d.conceptId)} (retention ~${Math.round((d.lowestRetention ?? 1) * 100)}%)`).join(", ") + " — reviewing at the fade is what makes it stick." : "nothing due yet. New proofs fade over ~1–2 days; tomorrow's queue is being scheduled now."}</p>
-    <p><strong>Story:</strong> ${(PEOPLE[engine.domainId] || PEOPLE["oregon-medical"]).bubbleName}'s journey — ${doneAreas.length}/${(domain?.translationAreas || []).length} areas with proven concepts (${doneAreas.map((a) => esc(a.label.en)).join(", ") || "just started"}). Continue in Shift to interpret their actual turns.</p>
-    <p class="hint">Close the tab. Come back tomorrow: due reviews first, then the story continues. That loop — not a marathon — is how interpreters are built.</p>`;
-  showScreen("screen-end");
+  $("#endTitle").textContent = studio.built.length ? "The studio keeps what you built. So does the record." : "An empty shelf is just a studio before its first true sentence.";
+  $("#endStats").innerHTML = `<p style="font-size:19px;">Shelf <strong>${studio.built.length} objects</strong> · Trust <strong>${studio.trust}</strong> · Visits tonight <strong>${S?.qi || 0}</strong></p>`;
+  $("#endExplain").innerHTML = `<strong>Engine next:</strong> ${esc(next?.rationale || "Work again.")}<br><span class="hint">Four proofs per concept — heard, built, defended, taught. Picking was never one of them.</span>`;
+  show("screen-end"); S = null; syncBadge();
 }
-
-function onKeys(e) {
-  if ($("#screen-title").classList.contains("is-active") && e.key === "Enter") { startSession(); return; }
-  if (!$("#screen-play").classList.contains("is-active")) return;
-  const n = Number(e.key);
-  if (n >= 1 && n <= 4) { const b = [...document.querySelectorAll(".choice:not(:disabled)")][n - 1]; if (b) b.click(); }
-  if (e.key === "Enter" && !$("#nextStepBtn").hidden) advance();
-}
-
-Juice.observeFeedback("#fbFeedback");
-boot().catch((e) => {
-  $("#titleContext").textContent = `Could not load the engine (${e.message}). Reload to retry — the bundled seed keeps the rooms open.`;
-  $("#startBtn").disabled = true;
-});
+boot().catch((e) => { $("#titleContext").textContent = `Studio failed (${e.message}). Reload.`; $("#startBtn").disabled = true; });
