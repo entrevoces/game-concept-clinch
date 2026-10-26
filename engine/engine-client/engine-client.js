@@ -231,7 +231,7 @@ export class EngineClient {
     throw new Error("getState needs engine-core injected (pass core) when CPE is unreachable");
   }
 
-  async getNext(domainId = this.domainId, { excludeGameId = null } = {}) {
+  async getNext(domainId = this.domainId, { excludeGameId = null, modeId = null } = {}) {
     // Prefer server only when we know local log is synced; otherwise local math
     // (identical code) avoids recommending from stale server state.
     if (this._outbox().length === 0) {
@@ -243,11 +243,19 @@ export class EngineClient {
     if (!this.core) throw new Error("getNext needs engine-core injected (pass core) when CPE is unreachable");
     const [domain, concepts] = [await this.getDomain(domainId), await this.listConcepts(domainId)];
     const state = this.core.computeLearnerState({ learnerId: this.learnerId, domainId, events: this.localEvidence(domainId), concepts });
-    return this.core.recommendNext({ domain, concepts, learnerState: state, excludeGameId });
+    return this.core.recommendNext({ domain, concepts, learnerState: state, excludeGameId, mode: modeId && this.core.modeById ? this.core.modeById(modeId) : null });
   }
 
   exportLocal(domainId = this.domainId) {
     return { learnerId: this.learnerId, domainId, evidence: this.localEvidence(domainId), exportedAt: new Date().toISOString() };
+  }
+
+  resetDomain(domainId = this.domainId) {
+    // Start over in ONE world: its local log + cursor go; other worlds keep
+    // their evidence (tenancy applies to fresh starts too). Server copy is
+    // untouched unless deleted server-side — same honesty as resetLocal.
+    this.storage.removeItem(this._logKey(domainId));
+    this.storage.removeItem(this._cursorKey(domainId));
   }
 
   resetLocal() {

@@ -13,7 +13,10 @@ const STAGE_GAME_HINT = { 1: "concept-clinch", 2: "concept-clinch", 3: "concept-
  * Priority: (diagnostic if competing causes) > critical-area gaps > recurring
  * misconceptions > due-for-review > weakest weighted competence > new material.
  */
-export function recommendNext({ domain, concepts = [], learnerState, excludeGameId = null }) {
+export function recommendNext({ domain, concepts = [], learnerState, excludeGameId = null, mode = null }) {
+  // mode: a TRAINING_MODES entry (or modeId string resolved by caller through
+  // modeById). Its stageWeights re-rank gaps: a telephone learner's Stage-1
+  // listening gap outranks everything, a written learner's Stage 6 barely counts.
   if (!domain || !concepts.length) {
     return { conceptId: null, areaId: null, stage: 1, activityType: "terminology", suggestedGameId: null, rationale: "No concepts are available for this domain yet — seed knowledge in the Console.", alternatives: [], needsDiagnostic: false, diagnosticPlan: null };
   }
@@ -43,7 +46,8 @@ export function recommendNext({ domain, concepts = [], learnerState, excludeGame
         if (comp) competencePull += (weights[k] ?? 0.5) * (1 - comp.estimate) * 0.12;
       }
       const prereqPenalty = (area?.prerequisiteAreaIds || []).some((pid) => !areaHasEvidence(pid)) ? 0.3 : 0;
-      const gap = (1 - cell.estimate) + riskBoost + unseenBoost + forgettingPull + competencePull - prereqPenalty;
+      const modeWeight = mode?.stageWeights ? (mode.stageWeights[stage] ?? 0.7) : 1;
+      const gap = ((1 - cell.estimate) + riskBoost + unseenBoost + forgettingPull + competencePull - prereqPenalty) * modeWeight;
       candidates.push({ concept: c, stage, cell, area, gap });
     }
   }
@@ -143,13 +147,16 @@ export const GAME_CATALOG = [
   { gameId: "vocab-craft", name: "VocabCraft", verb: "MINE & BUILD", stages: [2, 5], promise: "Mine term-blocks, craft the bridge, walk across it." },
   { gameId: "neon-bastion", name: "Neon Bastion", verb: "SHOOT", stages: [2, 6], promise: "Platform-shooter retrieval: blast only the true-equivalent drone." },
   { gameId: "melon-reef", name: "Melon Reef", verb: "DIVE", stages: [1, 5], promise: "Underwater listening harvest — hear it, swim it, surface with it." },
+  { gameId: "loteria-aula", name: "Lotería de Aula", verb: "GATHER", stages: [1, 2], promise: "The classroom lotería: one caller, every board listening. Group play, stealth assessment." },
+  { gameId: "milonga-sentido", name: "Milonga del Sentido", verb: "FEEL", stages: [3, 4, 8], promise: "Cultural translation of tango: carry the vibe, unlock the classics." },
 ];
 
 /**
  * Ranked game suggestions aligned to the learner's actual gaps (player-facing).
  * Each suggestion names the gap it serves — no generic "play more."
  */
-export function recommendGames({ domain, concepts = [], learnerState, limit = 3 }) {
+export function recommendGames({ domain, concepts = [], learnerState, limit = 3, modes = [] }) {
+  const modeGames = new Set((modes || []).flatMap((m) => (typeof m === "string" ? [] : m.games || [])));
   if (!learnerState || !concepts.length) {
     return [
       { gameId: "concept-clinch", name: "Voice Atelier", verb: "BUILD", reason: "Start here: the Atelier maps what you know, proof by proof.", gapStage: 1, conceptId: concepts[0]?.conceptId || null },
@@ -170,7 +177,7 @@ export function recommendGames({ domain, concepts = [], learnerState, limit = 3 
   const scored = GAME_CATALOG.map((g) => {
     const best = Math.max(...g.stages.map((s) => stageGap.find((x) => x.stage === s)?.gap ?? 0));
     const gapStage = g.stages.reduce((a, s) => ((stageGap.find((x) => x.stage === s)?.gap ?? 0) > (stageGap.find((x) => x.stage === a)?.gap ?? 0) ? s : a), g.stages[0]);
-    return { ...g, gap: best, gapStage };
+    return { ...g, gap: best + (modeGames.has(g.gameId) ? 0.25 : 0), gapStage, modeMatch: modeGames.has(g.gameId) };
   }).sort((a, b) => b.gap - a.gap);
 
   return scored.slice(0, limit).map((g) => {
